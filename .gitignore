@@ -1,0 +1,12 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/XamarinCosmosDB/.vs*
+/XamarinCosmosDB/XamarinCosmosDB/bin/*
+/XamarinCosmosDB/XamarinCosmosDB/obj
+/XamarinCosmosDB/XamarinCosmosDB.Android/bin/*
+/XamarinCosmosDB/XamarinCosmosDB.Android/obj
+/XamarinCosmosDB/XamarinCosmosDB.iOS/obj
+/XamarinCosmosDB/XamarinCosmosDB.UWP/bin/*
+/XamarinCosmosDB/XamarinCosmosDB.UWP/obj

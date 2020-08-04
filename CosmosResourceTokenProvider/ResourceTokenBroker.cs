@@ -19,6 +19,9 @@ namespace CosmosResourceTokenProvider
 	//        https://docs.microsoft.com/en-us/sandbox/functions-recipes/cosmos-db?tabs=csharp
 	//	      https://codemilltech.com/adding-azure-ad-b2c-authentication-to-azure-functions/
 
+	/// <summary>
+	/// Get a resource token based on userID (UserID is the partition key for storing records)
+	/// </summary>
 	public static class ResourceTokenBroker
     {
         static readonly string DbName = Environment.GetEnvironmentVariable("CosmosDBName");

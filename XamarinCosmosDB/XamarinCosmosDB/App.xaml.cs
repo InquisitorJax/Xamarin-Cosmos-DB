@@ -1,6 +1,4 @@
-﻿using System;
-using Xamarin.Forms;
-using Xamarin.Forms.Xaml;
+﻿using Xamarin.Forms;
 
 namespace XamarinCosmosDB
 {
@@ -10,8 +8,15 @@ namespace XamarinCosmosDB
 		{
 			InitializeComponent();
 
+			DependencyService.Register<IFetchCosmosResourceTokenCommand, FetchCosmosResourceTokenCommand>();
+			DependencyService.Register<MainViewModel>();
+
+			Settings = new AppSettings();
+
 			MainPage = new MainPage();
 		}
+
+		public static AppSettings Settings { get; private set; }
 
 		protected override void OnStart()
 		{

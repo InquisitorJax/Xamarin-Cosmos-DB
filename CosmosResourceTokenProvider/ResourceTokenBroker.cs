@@ -70,7 +70,8 @@ namespace CosmosResourceTokenProvider
 				}
 				else
 				{
-					return LogErrorAndReturnBadObjectResult("Could not get auth header from the http request", log);
+					//TODO: return error if implementing AAD B2C
+					//return LogErrorAndReturnBadObjectResult("Could not get auth header from the http request", log);
 				}
 
 			}

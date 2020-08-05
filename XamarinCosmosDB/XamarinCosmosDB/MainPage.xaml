@@ -1,16 +1,42 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+<ContentPage x:Class="XamarinCosmosDB.MainPage"
+             xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:converters="clr-namespace:Wibci.Xamarin.Forms.Converters;assembly=Wibci.Xamarin.Forms.Converters"
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d"
-             x:Class="XamarinCosmosDB.MainPage">
+             mc:Ignorable="d">
 
-    <StackLayout>
-        <!-- Place new controls here -->
-        <Label Text="Welcome to Xamarin.Forms!" 
-           HorizontalOptions="Center"
-           VerticalOptions="CenterAndExpand" />
-    </StackLayout>
+	<StackLayout Margin="12" Spacing="12">
+		<StackLayout.Resources>
+			<converters:BooleanToInvertedBooleanConverter x:Key="bib" />
+			<converters:NullValueToBooleanConverter x:Key="nvc" />
+		</StackLayout.Resources>
+
+		<Label FontSize="Large"
+		       HorizontalOptions="Center"
+		       IsVisible="{Binding ErrorMessage, Converter={StaticResource nvc}, ConverterParameter=switch}"
+		       LineBreakMode="TailTruncation"
+		       Text="{Binding ErrorMessage}"
+		       TextColor="Red" />
+
+		<StackLayout Orientation="Horizontal">
+			<Switch IsToggled="{Binding UseLocalCosmosDB}" />
+			<Label Text="Use Local Cosmos DB" />
+		</StackLayout>
+
+		<Button Command="{Binding FetchResourceTokenCommand}"
+		        IsEnabled="{Binding IsBusy, Converter={StaticResource bib}}"
+		        Text="Fetch Resource Token" />
+
+		<Label FontAttributes="Bold"
+		       FontSize="Medium"
+		       Text="Token:" />
+		<Label HorizontalOptions="Center"
+		       LineBreakMode="TailTruncation"
+		       Text="{Binding Token}" />
+
+
+	</StackLayout>
 
 </ContentPage>

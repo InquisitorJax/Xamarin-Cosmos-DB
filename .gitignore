@@ -10,3 +10,4 @@
 /XamarinCosmosDB/XamarinCosmosDB.iOS/obj
 /XamarinCosmosDB/XamarinCosmosDB.UWP/bin/*
 /XamarinCosmosDB/XamarinCosmosDB.UWP/obj
+/XamarinCosmosDB/XamarinCosmosDB/appsettings.local.json

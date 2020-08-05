@@ -1,6 +1,11 @@
 ﻿using Prism.Commands;
 using Prism.Mvvm;
+using System;
+using System.Diagnostics;
+using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using System.Windows.Input;
+using Wibci.LogicCommand;
 using Xamarin.Forms;
 
 namespace XamarinCosmosDB
@@ -10,38 +15,17 @@ namespace XamarinCosmosDB
 	{
 
 		private readonly IFetchCosmosResourceTokenCommand _fetchTokenLogic;
+		private readonly ICosmosRepository _cosmosRepository;
 
 		public MainViewModel()
 		{
 			_fetchTokenLogic = DependencyService.Get<IFetchCosmosResourceTokenCommand>();
-			FetchResourceTokenCommand = new DelegateCommand(FetchResourceToken);
+			_cosmosRepository = DependencyService.Get<ICosmosRepository>();
 
-			UserId = "test-user-id";
-		}
+			FetchResourceTokenCommand = new DelegateCommand(async () => await FetchResourceTokenAsync());
+			CreateDBRecordCommand = new DelegateCommand(CreateDBRecord);
 
-		private async void FetchResourceToken()
-		{
-			IsBusy = true;
-			ErrorMessage = null;
-			Token = null;
-
-			try
-			{
-				var request = new CosmosResourceTokenRequest(UserId);
-				var response = await _fetchTokenLogic.ExecuteAsync(request);
-				if (response.IsValid())
-				{
-					Token = response.TokenResponse.Token;
-				}
-				else
-				{
-					ErrorMessage = response.Notification.ToString();
-				}
-			}
-			finally
-			{
-				IsBusy = false;
-			}
+			App.CurrentUserId = "test-user-id";
 		}
 
 		private bool _isBusy;
@@ -53,6 +37,8 @@ namespace XamarinCosmosDB
 		}
 
 		public ICommand FetchResourceTokenCommand { get; }
+
+		public ICommand CreateDBRecordCommand { get; }
 
 		private string _userId;
 
@@ -70,12 +56,100 @@ namespace XamarinCosmosDB
 			set { SetProperty(ref _token, value); }
 		}
 
-		private string _errorMessage;
+		private DateTimeOffset _tokenExpiry;
 
-		public string ErrorMessage
+		public DateTimeOffset TokenExpiry
 		{
-			get { return _errorMessage; }
-			set { SetProperty(ref _errorMessage, value); }
+			get { return _tokenExpiry; }
+			set { SetProperty(ref _tokenExpiry, value); }
+		}
+
+		private string _message;
+
+		public string Message
+		{
+			get { return _message; }
+			set { SetProperty(ref _message, value); }
+		}
+
+		private string _modelName;
+
+		public string ModelName
+		{
+			get { return _modelName; }
+			set { SetProperty(ref _modelName, value); }
+		}
+
+		private async Task<Notification> FetchResourceTokenAsync()
+		{
+			IsBusy = true;
+			Message = null;
+			Token = null;
+
+			var response = Notification.Success();
+
+			try
+			{
+				var request = new CosmosResourceTokenRequest(UserId);
+				var logicResponse = await _fetchTokenLogic.ExecuteAsync(request);
+				response.AddRange(logicResponse.Notification);
+
+				if (response.IsValid())
+				{
+					Token = logicResponse.TokenResponse.Token;
+					TokenExpiry = logicResponse.TokenResponse.TokenExpiry;
+					_cosmosRepository.UpdateToken(Token);
+				}
+				else
+				{
+					Message = response.ToString();
+				}
+			}
+			finally
+			{
+				IsBusy = false;
+			}
+			return response;
+		}
+
+		private async void CreateDBRecord()
+		{
+			IsBusy = true;
+
+			try
+			{
+				//make sure we have a valid token to call cosmos with
+				await CheckForValidResourceTokenAsync();
+
+				var testRecord = new TestModel { Name = ModelName };
+
+				var saveResult = await _cosmosRepository.SaveModelAsync(testRecord);
+
+				if (saveResult.IsValid())
+				{
+					Message = "SUCCESS!";
+				}
+				else
+				{
+					Message = saveResult.ToString();
+				}
+			}
+			finally
+			{
+				IsBusy = false;
+			}
+		}
+
+		private async Task<Notification> CheckForValidResourceTokenAsync()
+		{
+			var result = Notification.Success();
+			if (TokenExpiry.ToUniversalTime() < DateTime.UtcNow.Add(TimeSpan.FromMinutes(5)))
+			{
+				Debug.WriteLine("The Cosmos Resource Token is about to expire. Let's get a new one....");
+				await FetchResourceTokenAsync();
+			}
+
+			return result;
 		}
 
 	}

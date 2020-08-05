@@ -36,6 +36,15 @@
 		       LineBreakMode="TailTruncation"
 		       Text="{Binding Token}" />
 
+		<StackLayout IsVisible="{Binding Token, Converter={StaticResource nvc}, ConverterParameter=switch}">
+			<Label FontAttributes="Bold"
+			       FontSize="Medium"
+			       Text="Name for DB Item" />
+			<Entry Text="{Binding ModelName}" />
+			<Button Command="{Binding CreateDBRecordCommand}"
+			        IsEnabled="{Binding IsBusy, Converter={StaticResource bib}}"
+			        Text="Create A CosmosDB Record!" />
+		</StackLayout>
 
 	</StackLayout>
 

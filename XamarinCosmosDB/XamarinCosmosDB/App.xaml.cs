@@ -9,6 +9,9 @@ namespace XamarinCosmosDB
 			InitializeComponent();
 
 			DependencyService.Register<IFetchCosmosResourceTokenCommand, FetchCosmosResourceTokenCommand>();
+			DependencyService.Register<ICosmosRepository, CosmosRepository>();
+			DependencyService.Register<ICosmosClientFactory, CosmosClientFactory>();
+
 			DependencyService.Register<MainViewModel>();
 
 			Settings = new AppSettings();
@@ -17,6 +20,8 @@ namespace XamarinCosmosDB
 		}
 
 		public static AppSettings Settings { get; private set; }
+
+		public static string CurrentUserId { get; set; }
 
 		protected override void OnStart()
 		{

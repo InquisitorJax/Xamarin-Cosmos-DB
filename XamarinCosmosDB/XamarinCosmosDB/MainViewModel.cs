@@ -25,6 +25,8 @@ namespace XamarinCosmosDB
 			CreateDBRecordCommand = new DelegateCommand(CreateDBRecord);
 
 			App.CurrentUserId = "test-user-id";
+			UseLocalResourceTokenBroker = true;
+			UseLocalCosmosDB = true;
 		}
 
 		private bool _isBusy;

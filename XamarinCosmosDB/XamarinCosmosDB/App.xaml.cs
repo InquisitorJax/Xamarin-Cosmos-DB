@@ -23,6 +23,10 @@ namespace XamarinCosmosDB
 
 		public static string CurrentUserId { get; set; }
 
+		public static bool UseLocalResourceTokenBroker { get; set; }
+
+		public static bool UseLocalCosmosDB { get; set; }
+
 		protected override void OnStart()
 		{
 		}

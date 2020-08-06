@@ -38,12 +38,15 @@ namespace XamarinCosmosDB
 				string connectionString = App.Settings[AppSettings.COSMOS_DB_URL];
 
 #if DEBUG
-				//using static connection
-				//connectionString = App.Settings[AppSettings.COSMOS_DB_CONNECTION_STRING_LOCAL];
-				//_client = new CosmosClient(connectionString, options); 
+				if (App.UseLocalCosmosDB)
+				{
+					//using static connection (not the resource token)
+					//connectionString = App.Settings[AppSettings.COSMOS_DB_CONNECTION_STRING_LOCAL];
+					//_client = new CosmosClient(connectionString, options); 
 
-				//using resource token:
-				connectionString = App.Settings[AppSettings.COSMOS_DB_URL_LOCAL];
+					//using resource token:
+					connectionString = App.Settings[AppSettings.COSMOS_DB_URL_LOCAL];
+				}
 #endif
 				_client = new CosmosClient(connectionString, _cosmosAccessToken, options);
 

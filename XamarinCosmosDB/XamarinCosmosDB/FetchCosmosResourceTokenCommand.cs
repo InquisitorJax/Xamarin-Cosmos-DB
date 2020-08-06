@@ -32,11 +32,17 @@ namespace XamarinCosmosDB
 
 			string baseUrl = App.Settings[AppSettings.COSMOS_BROKER_BASE_URL];
 #if DEBUG
-			baseUrl = App.Settings[AppSettings.COSMOS_BROKER_BASE_URL_LOCAL]; //for local function execution
+			if (App.UseLocalResourceTokenBroker)
+			{
+				baseUrl = App.Settings[AppSettings.COSMOS_BROKER_BASE_URL_LOCAL]; //for local function execution
+			}
 #endif
 			string userBrokerUrl = App.Settings[AppSettings.COSMOS_USER_BROKER_URL];
 #if DEBUG
-			userBrokerUrl = App.Settings[AppSettings.COSMOS_USER_BROKER_URL_LOCAL]; //for local function execution
+			if (App.UseLocalResourceTokenBroker)
+			{
+				userBrokerUrl = App.Settings[AppSettings.COSMOS_USER_BROKER_URL_LOCAL]; //for local function execution
+			}
 #endif
 
 			Uri baseUri = new Uri(baseUrl);

@@ -7,45 +7,53 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d">
 
-	<StackLayout Margin="12" Spacing="12">
-		<StackLayout.Resources>
-			<converters:BooleanToInvertedBooleanConverter x:Key="bib" />
-			<converters:NullValueToBooleanConverter x:Key="nvc" />
-		</StackLayout.Resources>
 
-		<Label FontSize="Large"
-		       HorizontalOptions="Center"
-		       IsVisible="{Binding ErrorMessage, Converter={StaticResource nvc}, ConverterParameter=switch}"
-		       LineBreakMode="TailTruncation"
-		       Text="{Binding ErrorMessage}"
-		       TextColor="Red" />
+	<Grid Margin="12" RowDefinitions="Auto, *">
+		<StackLayout Spacing="12">
+			<StackLayout.Resources>
+				<converters:BooleanToInvertedBooleanConverter x:Key="bib" />
+				<converters:NullValueToBooleanConverter x:Key="nvc" />
+			</StackLayout.Resources>
 
-		<StackLayout Orientation="Horizontal">
-			<Switch IsToggled="{Binding UseLocalCosmosDB}" />
-			<Label Text="Use Local Cosmos DB" />
-		</StackLayout>
+			<StackLayout Orientation="Horizontal">
+				<Switch IsToggled="{Binding UseLocalResourceTokenBroker}" />
+				<Label Text="Use Local Cosmos DB Resource Token Broker Function" />
+			</StackLayout>
 
-		<Button Command="{Binding FetchResourceTokenCommand}"
-		        IsEnabled="{Binding IsBusy, Converter={StaticResource bib}}"
-		        Text="Fetch Resource Token" />
 
-		<Label FontAttributes="Bold"
-		       FontSize="Medium"
-		       Text="Token:" />
-		<Label HorizontalOptions="Center"
-		       LineBreakMode="TailTruncation"
-		       Text="{Binding Token}" />
+			<Button Command="{Binding FetchResourceTokenCommand}"
+			        IsEnabled="{Binding IsBusy, Converter={StaticResource bib}}"
+			        Text="Fetch Resource Token" />
 
-		<StackLayout IsVisible="{Binding Token, Converter={StaticResource nvc}, ConverterParameter=switch}">
 			<Label FontAttributes="Bold"
 			       FontSize="Medium"
-			       Text="Name for DB Item" />
-			<Entry Text="{Binding ModelName}" />
-			<Button Command="{Binding CreateDBRecordCommand}"
-			        IsEnabled="{Binding IsBusy, Converter={StaticResource bib}}"
-			        Text="Create A CosmosDB Record!" />
+			       Text="Token:" />
+			<Label HorizontalOptions="Center"
+			       LineBreakMode="TailTruncation"
+			       Text="{Binding Token}" />
+
+			<StackLayout IsVisible="{Binding Token, Converter={StaticResource nvc}, ConverterParameter=switch}">
+				<StackLayout Orientation="Horizontal">
+					<Switch IsToggled="{Binding UseLocalCosmosDB}" />
+					<Label Text="Use Local Cosmos DB Emulator" />
+				</StackLayout>
+				<Label FontAttributes="Bold"
+				       FontSize="Medium"
+				       Text="Name for DB Item" />
+				<Entry Text="{Binding ModelName}" />
+				<Button Command="{Binding CreateDBRecordCommand}"
+				        IsEnabled="{Binding IsBusy, Converter={StaticResource bib}}"
+				        Text="Create A CosmosDB Record!" />
+			</StackLayout>
+
 		</StackLayout>
 
-	</StackLayout>
+		<Label Grid.Row="1"
+		       FontAttributes="Bold"
+		       FontSize="Medium"
+		       Text="{Binding Message}"
+		       TextColor="Red"
+		       VerticalOptions="End" />
+	</Grid>
 
 </ContentPage>

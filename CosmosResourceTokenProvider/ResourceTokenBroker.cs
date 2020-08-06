@@ -26,7 +26,7 @@ namespace CosmosResourceTokenProvider
     {
         static readonly string DbName = Environment.GetEnvironmentVariable("CosmosDBName");
         static readonly string UserDataCollectionName = Environment.GetEnvironmentVariable("CosmosContainerName");
-        static readonly string CosmosConnection = Environment.GetEnvironmentVariable("CosmosConnectionString_Local"); //"_Local";
+        static readonly string CosmosConnection = Environment.GetEnvironmentVariable("CosmosConnectionString"); //"_Local";
 
         static CosmosClient _cosmosClient;
         static Database _database;

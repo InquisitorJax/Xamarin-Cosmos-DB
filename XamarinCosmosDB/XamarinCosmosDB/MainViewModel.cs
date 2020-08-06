@@ -2,7 +2,6 @@
 using Prism.Mvvm;
 using System;
 using System.Diagnostics;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Wibci.LogicCommand;
@@ -40,14 +39,6 @@ namespace XamarinCosmosDB
 
 		public ICommand CreateDBRecordCommand { get; }
 
-		private string _userId;
-
-		public string UserId
-		{
-			get { return _userId; }
-			set { SetProperty(ref _userId, value); }
-		}
-
 		private string _token;
 
 		public string Token
@@ -63,6 +54,31 @@ namespace XamarinCosmosDB
 			get { return _tokenExpiry; }
 			set { SetProperty(ref _tokenExpiry, value); }
 		}
+
+		private bool _userLocalCosmosDB;
+
+		public bool UseLocalCosmosDB
+		{
+			get { return _userLocalCosmosDB; }
+			set 
+			{ 
+				SetProperty(ref _userLocalCosmosDB, value);
+				App.UseLocalCosmosDB = value;
+			}
+		}
+
+		private bool _useLocalResourceTokenBroker;
+
+		public bool UseLocalResourceTokenBroker
+		{
+			get { return _useLocalResourceTokenBroker; }
+			set 
+			{
+				SetProperty(ref _useLocalResourceTokenBroker, value);
+				App.UseLocalResourceTokenBroker = value;
+			}
+		}
+
 
 		private string _message;
 
@@ -90,7 +106,7 @@ namespace XamarinCosmosDB
 
 			try
 			{
-				var request = new CosmosResourceTokenRequest(UserId);
+				var request = new CosmosResourceTokenRequest(App.CurrentUserId);
 				var logicResponse = await _fetchTokenLogic.ExecuteAsync(request);
 				response.AddRange(logicResponse.Notification);
 

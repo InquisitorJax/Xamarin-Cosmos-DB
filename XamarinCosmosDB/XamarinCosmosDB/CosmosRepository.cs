@@ -50,7 +50,7 @@ namespace XamarinCosmosDB
 			}
 			catch (CosmosException cex)
 			{
-				result.Fail($"failed to save document {typeof(T).Name} Reason: {cex.StatusCode}");
+				result.Fail($"Failed to save document {typeof(T).Name} Reason: {cex.StatusCode}");
 				//TODO: Handle Cosmos exceptions
 				//doc: https://docs.microsoft.com/en-us/dotnet/api/microsoft.azure.cosmos.container.upsertitemasync?view=azure-dotnet
 			}
@@ -62,7 +62,7 @@ namespace XamarinCosmosDB
 			}
 			catch
 			{
-				result.Fail($"failed to save document {typeof(T).Name}");
+				result.Fail($"Failed to save document {typeof(T).Name}");
 			}
 
 			return result;

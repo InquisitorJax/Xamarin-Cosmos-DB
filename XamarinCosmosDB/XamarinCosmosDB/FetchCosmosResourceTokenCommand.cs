@@ -5,6 +5,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Wibci.LogicCommand;
+using Xamarin.Forms;
 
 namespace XamarinCosmosDB
 {
@@ -35,6 +36,10 @@ namespace XamarinCosmosDB
 			if (App.UseLocalResourceTokenBroker)
 			{
 				baseUrl = App.Settings[AppSettings.COSMOS_BROKER_BASE_URL_LOCAL]; //for local function execution
+				if (Device.RuntimePlatform == Device.UWP)
+				{
+					baseUrl = "http://localhost:7071/";
+				}
 			}
 #endif
 			string userBrokerUrl = App.Settings[AppSettings.COSMOS_USER_BROKER_URL];

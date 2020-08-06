@@ -1,6 +1,7 @@
 ﻿using Microsoft.Azure.Cosmos;
 using System;
 using System.Diagnostics;
+using Xamarin.Forms;
 
 namespace XamarinCosmosDB
 {
@@ -46,6 +47,10 @@ namespace XamarinCosmosDB
 
 					//using resource token:
 					connectionString = App.Settings[AppSettings.COSMOS_DB_URL_LOCAL];
+					if (Device.RuntimePlatform == Device.UWP)
+					{
+						connectionString = "http://localhost:8081/";
+					}
 				}
 #endif
 				_client = new CosmosClient(connectionString, _cosmosAccessToken, options);

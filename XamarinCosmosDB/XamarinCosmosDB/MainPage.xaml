@@ -8,7 +8,7 @@
              mc:Ignorable="d">
 
 
-	<Grid Margin="12" RowDefinitions="Auto, *">
+	<Grid Margin="12,32,12,12" RowDefinitions="Auto, *">
 		<StackLayout Spacing="12">
 			<StackLayout.Resources>
 				<converters:BooleanToInvertedBooleanConverter x:Key="bib" />
@@ -17,7 +17,7 @@
 
 			<StackLayout Orientation="Horizontal">
 				<Switch IsToggled="{Binding UseLocalResourceTokenBroker}" />
-				<Label Text="Use Local Cosmos DB Resource Token Broker Function" />
+				<Label Text="Use Local Cosmos DB Resource Token Broker Function" VerticalTextAlignment="Center" />
 			</StackLayout>
 
 
@@ -35,7 +35,7 @@
 			<StackLayout IsVisible="{Binding Token, Converter={StaticResource nvc}, ConverterParameter=switch}">
 				<StackLayout Orientation="Horizontal">
 					<Switch IsToggled="{Binding UseLocalCosmosDB}" />
-					<Label Text="Use Local Cosmos DB Emulator" />
+					<Label Text="Use Local Cosmos DB Emulator" VerticalTextAlignment="Center" />
 				</StackLayout>
 				<Label FontAttributes="Bold"
 				       FontSize="Medium"

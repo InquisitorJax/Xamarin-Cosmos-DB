@@ -1,7 +1,5 @@
 ﻿using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace XamarinCosmosDB
 {
@@ -15,6 +13,7 @@ namespace XamarinCosmosDB
 		{
 			Id = model.Id;
 			Model = model;
+			Type = typeof(T).Name;
 			UserId = App.CurrentUserId; //user Id is used as the partition key
 		}
 
@@ -25,6 +24,8 @@ namespace XamarinCosmosDB
 		public string Id { get; set; }
 
 		public T Model { get; set; }
+
+		public string Type { get; set; }
 
 		/// <summary>
 		/// User Id is the partition key!

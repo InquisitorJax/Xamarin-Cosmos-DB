@@ -102,7 +102,8 @@ namespace XamarinCosmosDB
 
 		private void CreateClient()
 		{
-			_container = _clientFactory.Create(_token, allowBulkExecution: true); //allow bulk execution for multi-record updates
+			//BUG? 403 Forbidden error when making a call when options allowBulkExecution = true
+			_container = _clientFactory.Create(_token, allowBulkExecution: false); //allow bulk execution for multi-record updates
 																			//todo: database endpoint url, and container id should come from the token?
 			if (_container != null)
 			{

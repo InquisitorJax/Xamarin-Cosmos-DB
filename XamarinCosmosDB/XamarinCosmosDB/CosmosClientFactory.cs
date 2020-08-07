@@ -54,7 +54,7 @@ namespace XamarinCosmosDB
 					}
 				}
 #endif
-				_client = new CosmosClient(connectionString, _cosmosAccessToken); //, options); //403 Forbidden error if include "AllowBulkExecution" = true
+				_client = new CosmosClient(connectionString, _cosmosAccessToken, options); //403 Forbidden error if include "AllowBulkExecution" = true
 
 				string databaseName = App.Settings[AppSettings.COSMOS_DB_NAME];
 				string collectionName = App.Settings[AppSettings.COSMOS_COLLECTION_NAME];

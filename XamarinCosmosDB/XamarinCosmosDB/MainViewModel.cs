@@ -142,7 +142,7 @@ namespace XamarinCosmosDB
 				var testRecord = new TestModel { Name = ModelName };
 
 				var saveResult = await _cosmosRepository.SaveModelAsync(testRecord);
-
+				
 				if (saveResult.IsValid())
 				{
 					Message = "SUCCESS!";

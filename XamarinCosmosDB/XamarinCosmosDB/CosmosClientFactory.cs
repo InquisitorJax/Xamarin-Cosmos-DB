@@ -42,6 +42,7 @@ namespace XamarinCosmosDB
 				if (App.UseLocalCosmosDB)
 				{
 					//using static connection (not the resource token)
+					//connectionString = @"AccountEndpoint=https://[dbName].documents.azure.com:443/;AccountKey=[AccountKey]";
 					//connectionString = App.Settings[AppSettings.COSMOS_DB_CONNECTION_STRING_LOCAL];
 					//_client = new CosmosClient(connectionString, options); 
 
@@ -53,11 +54,10 @@ namespace XamarinCosmosDB
 					}
 				}
 #endif
-				_client = new CosmosClient(connectionString, _cosmosAccessToken, options);
+				_client = new CosmosClient(connectionString, _cosmosAccessToken); //, options); //403 Forbidden error if include "AllowBulkExecution" = true
 
 				string databaseName = App.Settings[AppSettings.COSMOS_DB_NAME];
 				string collectionName = App.Settings[AppSettings.COSMOS_COLLECTION_NAME];
-
 
 				//NOTE: Assumes the database and collection have already been created in the portal
 				_userDataContainer = _client.GetDatabase(databaseName).GetContainer(collectionName);

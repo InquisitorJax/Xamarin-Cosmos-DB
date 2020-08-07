@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -20,6 +21,7 @@ namespace XamarinCosmosDB
 		/// <summary>
 		/// Will be the same as the Model.Id
 		/// </summary>
+		[JsonProperty("id")] //NOTE: Must be lower-case to match the "id" property defined in CosmosDB Container
 		public string Id { get; set; }
 
 		public T Model { get; set; }

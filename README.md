@@ -1,5 +1,9 @@
 # Xamarin-Cosmos-DB
-sample project demonstrating using CosmosDB from Xamarin Apps (in progress)
+sample project demonstrating using CosmosDB from Xamarin Apps
+
+### Known Issues
+- pointing to local CosmosDB Emulator: calls hang in what seems like a deadlock https://github.com/InquisitorJax/Xamarin-Cosmos-DB/issues/1
+- When adding "AllowBulkExecution" = true, CosmosDB returns 403 Forbidden response on any calls.
 
 ### Switching Environments
 

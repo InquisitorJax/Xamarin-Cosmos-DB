@@ -9,7 +9,7 @@ namespace XamarinCosmosDB
 			InitializeComponent();
 
 			DependencyService.Register<IFetchCosmosResourceTokenCommand, FetchCosmosResourceTokenCommand>();
-			DependencyService.Register<ICosmosRepository, CosmosRepository>();
+			DependencyService.RegisterSingleton<ICosmosRepository>(new CosmosRepository());
 			DependencyService.Register<ICosmosClientFactory, CosmosClientFactory>();
 
 			DependencyService.Register<MainViewModel>();

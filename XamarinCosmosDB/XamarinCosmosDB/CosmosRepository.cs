@@ -23,15 +23,13 @@ namespace XamarinCosmosDB
 
 	public class CosmosRepository : ICosmosRepository
 	{
-		private readonly ICosmosClientFactory _clientFactory;
-
 		private Container _container;
 		private PartitionKey _partitionKey;
 		private string _token;
 
 		public CosmosRepository()
 		{
-			_clientFactory = DependencyService.Get<ICosmosClientFactory>();
+			
 		}
 
 		public void UpdateToken(string token)
@@ -174,7 +172,8 @@ namespace XamarinCosmosDB
 		private void CreateClient()
 		{
 			//BUG? 403 Forbidden error when making a call when options allowBulkExecution = true
-			_container = _clientFactory.Create(_token, allowBulkExecution: false); //allow bulk execution for multi-record updates
+			var clientFactory = DependencyService.Get<ICosmosClientFactory>();
+			_container = clientFactory.Create(_token, allowBulkExecution: false); //allow bulk execution for multi-record updates
 																			//todo: database endpoint url, and container id should come from the token?
 			if (_container != null)
 			{

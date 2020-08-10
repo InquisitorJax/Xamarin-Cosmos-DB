@@ -7,7 +7,22 @@
              x:Name="_page">
 	<ContentPage.Resources>
 		<converters:BooleanToInvertedBooleanConverter x:Key="bib" />
+		<DataTemplate x:Key="TestModelTemplateNoSwipe">
+			<Grid Margin="12">
+				<StackLayout>
+					<StackLayout Orientation="Horizontal">
+						<Label Text="Test Model: " />
+						<Label Text="{Binding Name}" />
+					</StackLayout>
+					<Button Command="{Binding Source={x:Reference _page}, Path=BindingContext.DeleteModelCommand}"
+					        CommandParameter="{Binding .}"
+					        Text="Delete" />
+				</StackLayout>
+			</Grid>
+		</DataTemplate>
+
 		<DataTemplate x:Key="TestModelTemplate">
+			<!--  SwipeView not available on UWP  -->
 			<SwipeView>
 				<SwipeView.LeftItems>
 					<SwipeItems Mode="Reveal">
@@ -25,6 +40,26 @@
 					</StackLayout>
 				</Grid>
 			</SwipeView>
+		</DataTemplate>
+
+		<DataTemplate x:Key="TestModel2TemplateNoSwipe">
+			<Grid Margin="12">
+				<StackLayout>
+					<StackLayout Orientation="Horizontal">
+						<Label Text="Test Model: " />
+						<Label Text="{Binding Name}" />
+					</StackLayout>
+					<StackLayout Orientation="Horizontal">
+						<Button Command="{Binding Source={x:Reference _page}, Path=BindingContext.DeleteModelCommand}"
+						        CommandParameter="{Binding .}"
+						        Text="Delete" />
+						<Button Command="{Binding Source={x:Reference _page}, Path=BindingContext.EditModelCommand}"
+						        CommandParameter="{Binding .}"
+						        Text="Edit" />
+
+					</StackLayout>
+				</StackLayout>
+			</Grid>
 		</DataTemplate>
 		<DataTemplate x:Key="TestModel2Template">
 			<SwipeView>
@@ -55,13 +90,18 @@
 
 		</DataTemplate>
 		<xamarincosmosdb:TestModelTemplateSelector x:Key="TemplateSelector"
-		                                           TestModel2Template="{StaticResource TestModel2Template}"
-		                                           TestModelTemplate="{StaticResource TestModelTemplate}" />
+		                                           TestModel2Template="{OnPlatform UWP={StaticResource TestModel2TemplateNoSwipe},
+		                                                                           Default={StaticResource TestModel2Template}}"
+		                                           TestModelTemplate="{OnPlatform UWP={StaticResource TestModelTemplateNoSwipe},
+		                                                                          Default={StaticResource TestModelTemplate}}" />
 
 	</ContentPage.Resources>
 	<ContentPage.Content>
 		<Grid Margin="12" RowDefinitions="Auto, *">
-			<Label HorizontalOptions="Center" Text="Swipe to delete / edit an item" />
+			<Label HorizontalOptions="Center"
+			       IsVisible="{OnPlatform UWP=False,
+			                              Default=True}"
+			       Text="Swipe to delete / edit an item" />
 			<RefreshView Grid.Row="1"
 			             Command="{Binding RefreshRecordsCommand}"
 			             IsRefreshing="{Binding IsBusy}">

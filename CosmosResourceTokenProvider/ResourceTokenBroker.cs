@@ -120,7 +120,8 @@ namespace CosmosResourceTokenProvider
 
 			var user = await GetOrCreatePermissionUserAsync(userId);
 
-			var tokenLifetimeSpan = TimeSpan.FromDays(1); //default value is 1 hour
+			// NOTE: make this lifespan something like TimeSpan.FromMinutes(10); to test token recovery in the mobile app
+			var tokenLifetimeSpan = TimeSpan.FromMinutes(10); //default value is 1 hour
 			int tokenLifetime = Convert.ToInt32(tokenLifetimeSpan.TotalSeconds); //default is 1 hour - should this be longer?
 			retPermission.TokenExpiry = DateTime.UtcNow.Add(tokenLifetimeSpan);
 

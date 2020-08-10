@@ -19,8 +19,3 @@ sample project demonstrating using CosmosDB from Xamarin Apps
 - For Windows UWP, localhost has been set in code
 - Set MainViewModel.UseLocalResourceTokenBroker to fetch the token from local function, or azure function
 - Set MainViewModel.UseLocalCosmosDB to operate against the local CosmosDB Emulator, or azure CosmosDB
-
-### Current Results
-- Resource token works
-- Local CosmosDB create attempt hangs on the api call
-- Azure CosmosDB create attempt returns a 403 Forbidden result (Firewall "allow public access" has been enabled)

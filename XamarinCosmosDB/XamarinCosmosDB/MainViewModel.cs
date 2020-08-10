@@ -23,10 +23,11 @@ namespace XamarinCosmosDB
 
 			FetchResourceTokenCommand = new DelegateCommand(async () => await FetchResourceTokenAsync());
 			CreateDBRecordCommand = new DelegateCommand(CreateDBRecord);
+			CreateDBRecord2Command = new DelegateCommand(CreateDBRecord2);
 
 			App.CurrentUserId = "test-user-id";
 			UseLocalResourceTokenBroker = true;
-			UseLocalCosmosDB = true;
+			UseLocalCosmosDB = false;
 		}
 
 		private bool _isBusy;
@@ -40,6 +41,8 @@ namespace XamarinCosmosDB
 		public ICommand FetchResourceTokenCommand { get; }
 
 		public ICommand CreateDBRecordCommand { get; }
+
+		public ICommand CreateDBRecord2Command { get; }
 
 		private string _token;
 
@@ -131,6 +134,35 @@ namespace XamarinCosmosDB
 		}
 
 		private async void CreateDBRecord()
+		{			
+			if (string.IsNullOrEmpty(ModelName))
+			{
+				Message = "Enter a name for the model!";
+				return;
+			}
+
+			var testRecord = new TestModel { Name = ModelName };			
+			await SaveRecordAsync(testRecord);
+		}
+
+		private int _record2NumberCounter;
+
+		private async void CreateDBRecord2()
+		{
+			if (string.IsNullOrEmpty(ModelName))
+			{
+				Message = "Enter a name for the model!";
+				return;
+			}
+
+			var newDate = DateTime.Now.AddDays(_record2NumberCounter);
+			var testRecord = new TestModel2 { Name2 = ModelName, Number = _record2NumberCounter, Date = newDate };
+			_record2NumberCounter++;
+
+			await SaveRecordAsync(testRecord);
+		}
+
+		private async Task SaveRecordAsync<T>(T model) where T : ModelBase, new()
 		{
 			IsBusy = true;
 
@@ -139,10 +171,8 @@ namespace XamarinCosmosDB
 				//make sure we have a valid token to call cosmos with
 				await CheckForValidResourceTokenAsync();
 
-				var testRecord = new TestModel { Name = ModelName };
+				var saveResult = await _cosmosRepository.SaveModelAsync(model);
 
-				var saveResult = await _cosmosRepository.SaveModelAsync(testRecord);
-				
 				if (saveResult.IsValid())
 				{
 					Message = "SUCCESS!";

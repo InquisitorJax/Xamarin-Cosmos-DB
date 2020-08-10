@@ -13,10 +13,11 @@ namespace XamarinCosmosDB
 			DependencyService.Register<ICosmosClientFactory, CosmosClientFactory>();
 
 			DependencyService.Register<MainViewModel>();
+			DependencyService.Register<ListItemsViewModel>();
 
 			Settings = new AppSettings();
 
-			MainPage = new MainPage();
+			MainPage = new NavigationPage(new MainPage());
 		}
 
 		public static AppSettings Settings { get; private set; }

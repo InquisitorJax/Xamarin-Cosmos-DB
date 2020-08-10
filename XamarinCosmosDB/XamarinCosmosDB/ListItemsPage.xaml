@@ -1,0 +1,84 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="XamarinCosmosDB.ListItemsPage"
+             xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:converters="clr-namespace:Wibci.Xamarin.Forms.Converters;assembly=Wibci.Xamarin.Forms.Converters"
+             xmlns:xamarincosmosdb="clr-namespace:XamarinCosmosDB"
+             x:Name="_page">
+	<ContentPage.Resources>
+		<converters:BooleanToInvertedBooleanConverter x:Key="bib" />
+		<DataTemplate x:Key="TestModelTemplate">
+			<SwipeView>
+				<SwipeView.LeftItems>
+					<SwipeItems Mode="Reveal">
+						<SwipeItem BackgroundColor="Red"
+						           Command="{Binding Source={x:Reference _page}, Path=BindingContext.DeleteModelCommand}"
+						           CommandParameter="{Binding .}"
+						           Text="Delete" />
+					</SwipeItems>
+				</SwipeView.LeftItems>
+
+				<Grid Margin="12">
+					<StackLayout Orientation="Horizontal">
+						<Label Text="Test Model: " />
+						<Label Text="{Binding Name}" />
+					</StackLayout>
+				</Grid>
+			</SwipeView>
+		</DataTemplate>
+		<DataTemplate x:Key="TestModel2Template">
+			<SwipeView>
+				<SwipeView.LeftItems>
+					<SwipeItems Mode="Reveal">
+						<SwipeItem BackgroundColor="Red"
+						           Command="{Binding Source={x:Reference _page}, Path=BindingContext.DeleteModelCommand}"
+						           CommandParameter="{Binding .}"
+						           Text="Delete" />
+					</SwipeItems>
+				</SwipeView.LeftItems>
+
+				<Grid Margin="12">
+					<StackLayout>
+						<StackLayout Orientation="Horizontal">
+							<Label Text="Test Model2 : " />
+							<Label Text="{Binding Name}" />
+							<Label Text="{Binding Number}" />
+						</StackLayout>
+						<Label Text="{Binding Date}" />
+					</StackLayout>
+				</Grid>
+			</SwipeView>
+
+		</DataTemplate>
+		<xamarincosmosdb:TestModelTemplateSelector x:Key="TemplateSelector"
+		                                           TestModel2Template="{StaticResource TestModel2Template}"
+		                                           TestModelTemplate="{StaticResource TestModelTemplate}" />
+
+	</ContentPage.Resources>
+	<ContentPage.Content>
+		<Grid Margin="12" RowDefinitions="Auto, *">
+			<Label HorizontalOptions="Center" Text="Swipe to delete an item" />
+			<RefreshView Grid.Row="1"
+			             Command="{Binding RefreshRecordsCommand}"
+			             IsRefreshing="{Binding IsBusy}">
+				<CollectionView ItemTemplate="{StaticResource TemplateSelector}" ItemsSource="{Binding Models}">
+					<CollectionView.EmptyView>
+						<Grid IsVisible="{Binding IsBusy, Converter={StaticResource bib}}" VerticalOptions="Center">
+							<StackLayout VerticalOptions="Center">
+								<Label FontSize="Large"
+								       HorizontalOptions="Center"
+								       Text="There are no items in the database"
+								       VerticalOptions="Center" />
+								<Button Margin="0,16,0,0"
+								        Command="{Binding CreateDBRecordCommand}"
+								        IsEnabled="{Binding IsBusy, Converter={StaticResource bib}}"
+								        Text="Create A CosmosDB Record!" />
+
+							</StackLayout>
+						</Grid>
+					</CollectionView.EmptyView>
+				</CollectionView>
+			</RefreshView>
+		</Grid>
+	</ContentPage.Content>
+</ContentPage>

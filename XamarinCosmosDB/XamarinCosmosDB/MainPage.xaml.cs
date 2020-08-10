@@ -14,5 +14,10 @@ namespace XamarinCosmosDB
 			var viewModel = DependencyService.Get<MainViewModel>();
 			BindingContext = viewModel;
 		}
+
+		private void Button_Clicked(object sender, System.EventArgs e)
+		{
+			this.Navigation.PushAsync(new ListItemsPage());
+		}
 	}
 }

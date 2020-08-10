@@ -1,6 +1,9 @@
 ﻿using Microsoft.Azure.Cosmos;
+using Microsoft.Azure.Cosmos.Linq;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 using Wibci.LogicCommand;
 using Xamarin.Forms;
@@ -13,6 +16,10 @@ namespace XamarinCosmosDB
 		void UpdateToken(string token);
 
 		Task<Notification> SaveModelAsync<T>(T model) where T : ModelBase, new();
+
+		Task<FetchModelCollectionResult<T>> FetchModelCollectionAsync<T>() where T : ModelBase, new();
+
+		Task<Notification> DeleteModelAsync<T>(string id) where T : ModelBase, new();
 	}
 
 	public class CosmosRepository : ICosmosRepository
@@ -31,6 +38,52 @@ namespace XamarinCosmosDB
 		public void UpdateToken(string token)
 		{
 			_token = token;
+		}
+
+		public async Task<FetchModelCollectionResult<T>> FetchModelCollectionAsync<T>() where T : ModelBase, new()
+		{
+			//doc: https://github.com/Azure/azure-cosmos-dotnet-v3/blob/master/Microsoft.Azure.Cosmos.Samples/Usage/ItemManagement/Program.cs
+
+			var result = new FetchModelCollectionResult<T>();
+			var allItems = new List<T>();
+
+			try
+			{
+				result.Notification = CheckServiceCanOperate();
+
+				if (!result.IsValid())
+				{
+					return result;
+				}
+
+				var queryable = _container.GetItemLinqQueryable<CosmosDocument<T>>(requestOptions: PartitionRequestOptions);
+				var query = queryable.Where(cd => cd.Type == typeof(T).Name);
+				var iterator = query.ToFeedIterator();
+
+				using (iterator)
+				{
+					while (iterator.HasMoreResults)
+					{
+						FeedResponse<CosmosDocument<T>> response = await iterator.ReadNextAsync();
+						allItems.AddRange(response.Select(d => d.Model));
+					}
+				}
+
+				result.ModelCollection = allItems;
+			}
+			catch (ConfigurationException)
+			{
+				// There's an issue with Android and the System.Configuration.ConfigurationManager: https://github.com/xamarin/Xamarin.Forms/issues/5935
+				// For now we are ignoring ConfigurationExceptions as it seems that the operation works despite the exception.
+				Debug.WriteLine("Configuration Exception calling cosmos - current Android Bug issue https://github.com/xamarin/Xamarin.Forms/issues/5935");
+			}
+			catch
+			{
+				Debug.WriteLine($"Error while trying to fetch all {typeof(T).Name} items from cosmos");
+				result.Fail("Error");
+			}
+
+			return result;
 		}
 
 		public async Task<Notification> SaveModelAsync<T>(T model) where T : ModelBase, new()
@@ -68,6 +121,38 @@ namespace XamarinCosmosDB
 			return result;
 		}
 
+		public async Task<Notification> DeleteModelAsync<T>(string id) where T : ModelBase, new()
+		{
+			var result = CheckServiceCanOperate();
+
+			if (!result.IsValid())
+			{
+				return result;
+			}
+
+			try
+			{
+				ItemResponse<CosmosDocument<T>> response = await _container.DeleteItemAsync<CosmosDocument<T>>(
+					partitionKey: _partitionKey,
+					id: id);
+
+				Debug.WriteLine($"Deleted Item {typeof(T).Name}. Cost: {response.RequestCharge}RU. Status: {response.StatusCode}");
+			}
+			catch (ConfigurationException)
+			{
+				// There's an issue with Android and the System.Configuration.ConfigurationManager: https://github.com/xamarin/Xamarin.Forms/issues/5935
+				// For now we are ignoring ConfigurationExceptions as it seems that the operation works despite the exception.
+				Debug.WriteLine("Configuration Exception calling cosmos - current Android Bug issue https://github.com/xamarin/Xamarin.Forms/issues/5935");
+			}
+			catch
+			{
+				Debug.WriteLine($"failed to Delete document");
+				result.Fail("Error");
+			}
+
+			return result;
+		}
+
 		public bool IsInitialized { get; private set; }
 
 		private void Initialize()
@@ -77,6 +162,11 @@ namespace XamarinCosmosDB
 				CreateClient();
 			}
 		}
+
+		private QueryRequestOptions PartitionRequestOptions => new QueryRequestOptions
+		{
+			PartitionKey = _partitionKey
+		};
 
 		private Notification CheckServiceCanOperate()
 		{

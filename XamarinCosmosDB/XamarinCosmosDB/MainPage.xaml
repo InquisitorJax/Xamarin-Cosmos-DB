@@ -44,6 +44,14 @@
 				<Button Command="{Binding CreateDBRecordCommand}"
 				        IsEnabled="{Binding IsBusy, Converter={StaticResource bib}}"
 				        Text="Create A CosmosDB Record!" />
+				<Button Command="{Binding CreateDBRecord2Command}"
+				        IsEnabled="{Binding IsBusy, Converter={StaticResource bib}}"
+				        Text="Create A CosmosDB Record 2!" />
+				<Button Margin="0,16,0,0"
+				        Clicked="Button_Clicked"
+				        IsEnabled="{Binding IsBusy, Converter={StaticResource bib}}"
+				        Text="List Items" />
+
 			</StackLayout>
 
 		</StackLayout>

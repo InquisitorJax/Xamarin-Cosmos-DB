@@ -57,6 +57,8 @@ namespace XamarinCosmosDB.UWP
 
                 rootFrame.NavigationFailed += OnNavigationFailed;
 
+                Xamarin.Forms.Forms.SetFlags("SwipeView_Experimental");
+
                 Xamarin.Forms.Forms.Init(e);
 
                 if (e.PreviousExecutionState == ApplicationExecutionState.Terminated)

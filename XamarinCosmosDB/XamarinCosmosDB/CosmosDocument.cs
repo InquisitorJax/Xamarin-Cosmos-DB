@@ -49,10 +49,8 @@ namespace XamarinCosmosDB
 		public string Name { get; set; }
 	}
 
-	public class TestModel2  : ModelBase
+	public class TestModel2  : TestModel
 	{
-		public string Name2 { get; set; }
-
 		public int Number { get; set; }
 
 		public DateTime Date { get; set; }

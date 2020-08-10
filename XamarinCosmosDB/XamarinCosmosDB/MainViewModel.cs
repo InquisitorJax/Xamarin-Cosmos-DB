@@ -10,16 +10,14 @@ using Xamarin.Forms;
 namespace XamarinCosmosDB
 {
 
-	public class MainViewModel : BindableBase
+	public class MainViewModel : ViewModelBase
 	{
 
 		private readonly IFetchCosmosResourceTokenCommand _fetchTokenLogic;
-		private readonly ICosmosRepository _cosmosRepository;
 
 		public MainViewModel()
 		{
 			_fetchTokenLogic = DependencyService.Get<IFetchCosmosResourceTokenCommand>();
-			_cosmosRepository = DependencyService.Get<ICosmosRepository>();
 
 			FetchResourceTokenCommand = new DelegateCommand(async () => await FetchResourceTokenAsync());
 			CreateDBRecordCommand = new DelegateCommand(CreateDBRecord);
@@ -28,14 +26,6 @@ namespace XamarinCosmosDB
 			App.CurrentUserId = "test-user-id";
 			UseLocalResourceTokenBroker = true;
 			UseLocalCosmosDB = false;
-		}
-
-		private bool _isBusy;
-
-		public bool IsBusy
-		{
-			get { return _isBusy; }
-			set { SetProperty(ref _isBusy, value); }
 		}
 
 		public ICommand FetchResourceTokenCommand { get; }
@@ -52,12 +42,26 @@ namespace XamarinCosmosDB
 			set { SetProperty(ref _token, value); }
 		}
 
+		private int _tokenExpiryMinutes;
+
+		public int TokenExpiryMinutes
+		{
+			get { return _tokenExpiryMinutes; }
+			set { SetProperty(ref _tokenExpiryMinutes, value); }
+		}
+
 		private DateTimeOffset _tokenExpiry;
 
 		public DateTimeOffset TokenExpiry
 		{
 			get { return _tokenExpiry; }
-			set { SetProperty(ref _tokenExpiry, value); }
+			set
+			{
+				SetProperty(ref _tokenExpiry, value);
+				var dateDiff = _tokenExpiry.Subtract( DateTime.Now.ToUniversalTime());
+				TokenExpiryMinutes = (int)dateDiff.TotalMinutes;
+
+			}
 		}
 
 		private bool _userLocalCosmosDB;
@@ -119,7 +123,7 @@ namespace XamarinCosmosDB
 				{
 					Token = logicResponse.TokenResponse.Token;
 					TokenExpiry = logicResponse.TokenResponse.TokenExpiry;
-					_cosmosRepository.UpdateToken(Token);
+					Repo.UpdateToken(Token);
 				}
 				else
 				{
@@ -156,7 +160,7 @@ namespace XamarinCosmosDB
 			}
 
 			var newDate = DateTime.Now.AddDays(_record2NumberCounter);
-			var testRecord = new TestModel2 { Name2 = ModelName, Number = _record2NumberCounter, Date = newDate };
+			var testRecord = new TestModel2 { Name = ModelName, Number = _record2NumberCounter, Date = newDate };
 			_record2NumberCounter++;
 
 			await SaveRecordAsync(testRecord);
@@ -171,7 +175,7 @@ namespace XamarinCosmosDB
 				//make sure we have a valid token to call cosmos with
 				await CheckForValidResourceTokenAsync();
 
-				var saveResult = await _cosmosRepository.SaveModelAsync(model);
+				var saveResult = await Repo.SaveModelAsync(model);
 
 				if (saveResult.IsValid())
 				{

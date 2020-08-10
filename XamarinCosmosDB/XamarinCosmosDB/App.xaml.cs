@@ -14,6 +14,7 @@ namespace XamarinCosmosDB
 
 			DependencyService.Register<MainViewModel>();
 			DependencyService.Register<ListItemsViewModel>();
+			DependencyService.Register<TestModel2ViewModel>();
 
 			Settings = new AppSettings();
 

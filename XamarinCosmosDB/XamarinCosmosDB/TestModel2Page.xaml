@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="XamarinCosmosDB.TestModel2Page"
+             xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:converters="clr-namespace:Wibci.Xamarin.Forms.Converters;assembly=Wibci.Xamarin.Forms.Converters"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d">
+	<ContentPage.Content>
+
+		<StackLayout>
+			<StackLayout.Resources>
+				<converters:BooleanToInvertedBooleanConverter x:Key="bib" />
+			</StackLayout.Resources>
+
+			<Label Text="Name" />
+			<Entry Text="{Binding Model.Name}" />
+
+			<Label Text="Number" />
+			<Entry Keyboard="Numeric" Text="{Binding Model.Number}" />
+
+			<Label Text="Date" />
+			<DatePicker Date="{Binding Model.Date}" />
+
+			<Button Command="{Binding SaveCommand}"
+			        IsEnabled="{Binding IsBusy, Converter={StaticResource bib}}"
+			        Text="Save" />
+
+		</StackLayout>
+	</ContentPage.Content>
+</ContentPage>

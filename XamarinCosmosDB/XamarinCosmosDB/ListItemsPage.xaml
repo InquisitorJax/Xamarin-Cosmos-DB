@@ -34,6 +34,10 @@
 						           Command="{Binding Source={x:Reference _page}, Path=BindingContext.DeleteModelCommand}"
 						           CommandParameter="{Binding .}"
 						           Text="Delete" />
+						<SwipeItem BackgroundColor="LightBlue"
+						           Command="{Binding Source={x:Reference _page}, Path=BindingContext.EditModelCommand}"
+						           CommandParameter="{Binding .}"
+						           Text="Edit" />
 					</SwipeItems>
 				</SwipeView.LeftItems>
 
@@ -57,7 +61,7 @@
 	</ContentPage.Resources>
 	<ContentPage.Content>
 		<Grid Margin="12" RowDefinitions="Auto, *">
-			<Label HorizontalOptions="Center" Text="Swipe to delete an item" />
+			<Label HorizontalOptions="Center" Text="Swipe to delete / edit an item" />
 			<RefreshView Grid.Row="1"
 			             Command="{Binding RefreshRecordsCommand}"
 			             IsRefreshing="{Binding IsBusy}">

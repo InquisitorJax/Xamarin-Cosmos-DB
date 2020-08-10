@@ -3,11 +3,7 @@
              xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:converters="clr-namespace:Wibci.Xamarin.Forms.Converters;assembly=Wibci.Xamarin.Forms.Converters"
-             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d">
-
-
+             Title="Xamarin CosmosDB Example!">
 	<Grid Margin="12,32,12,12" RowDefinitions="Auto, *">
 		<StackLayout Spacing="12">
 			<StackLayout.Resources>
@@ -31,6 +27,10 @@
 			<Label HorizontalOptions="Center"
 			       LineBreakMode="TailTruncation"
 			       Text="{Binding Token}" />
+
+			<Label FontAttributes="Bold"
+			       FontSize="Medium"
+			       Text="{Binding TokenExpiryMinutes, StringFormat='The token expires in {0} minutes'}" />
 
 			<StackLayout IsVisible="{Binding Token, Converter={StaticResource nvc}, ConverterParameter=switch}">
 				<StackLayout Orientation="Horizontal">

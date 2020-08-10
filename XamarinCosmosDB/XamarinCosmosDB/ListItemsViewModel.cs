@@ -1,30 +1,75 @@
 ﻿using Prism.Commands;
-using Prism.Mvvm;
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Wibci.LogicCommand;
-using Xamarin.Forms;
 
 namespace XamarinCosmosDB
 {
-	public class ListItemsViewModel : BindableBase
+	public class ListItemsViewModel : ViewModelBase
 	{
-		private readonly ICosmosRepository _cosmosRepository;
 
 		public ListItemsViewModel()
 		{
-			_cosmosRepository = DependencyService.Get<ICosmosRepository>();
 			Models = new ObservableCollection<object>();
 
 			RefreshRecordsCommand = new DelegateCommand(async () => await FetchRecordsAsync());
 			DeleteModelCommand = new DelegateCommand<ModelBase>(DeleteModel);
+			EditModelCommand = new DelegateCommand<TestModel2>(EditModel);
 			CreateDBRecordCommand = new DelegateCommand(CreateDBRecord);
 		}
 
 		public ICommand CreateDBRecordCommand { get; }
+
+		public ICommand EditModelCommand { get; }
+
+
+		public ICommand DeleteModelCommand { get; }
+
+		public ICommand RefreshRecordsCommand { get; }
+
+		private ObservableCollection<object> _models;
+
+		public ObservableCollection<object> Models
+		{
+			get { return _models; }
+			set { SetProperty(ref _models, value); }
+		}
+
+		public async Task FetchRecordsAsync()
+		{
+			IsBusy = true;
+
+			try
+			{
+				var models = new List<object>();
+
+				var modelCollectionResult = await Repo.FetchModelCollectionAsync<TestModel>();
+				if (modelCollectionResult.IsValid())
+				{
+					models.AddRange(modelCollectionResult.ModelCollection);
+				}
+
+				var modelCollection2Result = await Repo.FetchModelCollectionAsync<TestModel2>();
+				if (modelCollection2Result.IsValid())
+				{
+					models.AddRange(modelCollection2Result.ModelCollection);
+				}
+
+				Models = new ObservableCollection<object>(models);
+			}
+			finally
+			{
+				IsBusy = false;
+			}
+		}
+
+		private void EditModel(TestModel2 model)
+		{
+			var page = new TestModel2Page(model);
+			App.Current.MainPage.Navigation.PushAsync(page);
+		}
 
 		private async void CreateDBRecord()
 		{
@@ -33,7 +78,7 @@ namespace XamarinCosmosDB
 			try
 			{
 				var model = new TestModel { Name = "New Record! " };
-				await _cosmosRepository.SaveModelAsync(model);
+				await Repo.SaveModelAsync(model);
 			}
 			finally
 			{
@@ -51,11 +96,11 @@ namespace XamarinCosmosDB
 
 				if (model.GetType() == typeof(TestModel2))
 				{
-					deleteResult = await _cosmosRepository.DeleteModelAsync<TestModel2>(model.Id);
+					deleteResult = await Repo.DeleteModelAsync<TestModel2>(model.Id);
 				}
 				else
 				{
-					deleteResult = await _cosmosRepository.DeleteModelAsync<TestModel>(model.Id);
+					deleteResult = await Repo.DeleteModelAsync<TestModel>(model.Id);
 				}
 
 				if (deleteResult.IsValid())
@@ -70,52 +115,5 @@ namespace XamarinCosmosDB
 			}
 		}
 
-		public ICommand DeleteModelCommand { get; }
-
-		public ICommand RefreshRecordsCommand { get; }
-
-		private ObservableCollection<object> _models;
-
-		public ObservableCollection<object> Models
-		{
-			get { return _models; }
-			set { SetProperty(ref _models, value); }
-		}
-
-		private bool _isBusy;
-
-		public bool IsBusy
-		{
-			get { return _isBusy; }
-			set { SetProperty(ref _isBusy, value); }
-		}
-
-		public async Task FetchRecordsAsync()
-		{
-			IsBusy = true;
-
-			try
-			{
-				var models = new List<object>();
-
-				var modelCollectionResult = await _cosmosRepository.FetchModelCollectionAsync<TestModel>();
-				if (modelCollectionResult.IsValid())
-				{
-					models.AddRange(modelCollectionResult.ModelCollection);
-				}
-
-				var modelCollection2Result = await _cosmosRepository.FetchModelCollectionAsync<TestModel2>();
-				if (modelCollection2Result.IsValid())
-				{
-					models.AddRange(modelCollection2Result.ModelCollection);
-				}
-
-				Models = new ObservableCollection<object>(models);
-			}
-			finally
-			{
-				IsBusy = false;
-			}
-		}
 	}
 }

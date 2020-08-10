@@ -1,7 +1,6 @@
 ﻿using Microsoft.Azure.Cosmos;
 using Microsoft.Azure.Cosmos.Linq;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
@@ -71,12 +70,6 @@ namespace XamarinCosmosDB
 
 				result.ModelCollection = allItems;
 			}
-			catch (ConfigurationException)
-			{
-				// There's an issue with Android and the System.Configuration.ConfigurationManager: https://github.com/xamarin/Xamarin.Forms/issues/5935
-				// For now we are ignoring ConfigurationExceptions as it seems that the operation works despite the exception.
-				Debug.WriteLine("Configuration Exception calling cosmos - current Android Bug issue https://github.com/xamarin/Xamarin.Forms/issues/5935");
-			}
 			catch
 			{
 				Debug.WriteLine($"Error while trying to fetch all {typeof(T).Name} items from cosmos");
@@ -99,19 +92,13 @@ namespace XamarinCosmosDB
 			{
 				var docToSave = new CosmosDocument<T>(model);
 
-				await _container.UpsertItemAsync(docToSave, _partitionKey); //.ConfigureAwait(false);
+				await _container.UpsertItemAsync(docToSave, _partitionKey);
 			}
 			catch (CosmosException cex)
 			{
 				result.Fail($"Failed to save document {typeof(T).Name} Reason: {cex.StatusCode}");
 				//TODO: Handle Cosmos exceptions
 				//doc: https://docs.microsoft.com/en-us/dotnet/api/microsoft.azure.cosmos.container.upsertitemasync?view=azure-dotnet
-			}
-			catch (ConfigurationException)
-			{
-				// There's an issue with Android and the System.Configuration.ConfigurationManager: https://github.com/xamarin/Xamarin.Forms/issues/5935
-				// For now we are ignoring ConfigurationExceptions as it seems that the operation works despite the exception.
-				Debug.WriteLine("Configuration Exception calling cosmos - current Android Bug issue https://github.com/xamarin/Xamarin.Forms/issues/5935");
 			}
 			catch
 			{
@@ -137,12 +124,6 @@ namespace XamarinCosmosDB
 					id: id);
 
 				Debug.WriteLine($"Deleted Item {typeof(T).Name}. Cost: {response.RequestCharge}RU. Status: {response.StatusCode}");
-			}
-			catch (ConfigurationException)
-			{
-				// There's an issue with Android and the System.Configuration.ConfigurationManager: https://github.com/xamarin/Xamarin.Forms/issues/5935
-				// For now we are ignoring ConfigurationExceptions as it seems that the operation works despite the exception.
-				Debug.WriteLine("Configuration Exception calling cosmos - current Android Bug issue https://github.com/xamarin/Xamarin.Forms/issues/5935");
 			}
 			catch
 			{

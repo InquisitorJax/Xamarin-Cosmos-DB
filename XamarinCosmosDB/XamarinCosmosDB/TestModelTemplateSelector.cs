@@ -10,15 +10,17 @@ namespace XamarinCosmosDB
 
 		protected override DataTemplate OnSelectTemplate(object item, BindableObject container)
 		{
+			if (item is TestModel2)
+			{
+				// test for derived type first
+				return TestModel2Template;
+			}
+
 			if (item is TestModel)
 			{
 				return TestModelTemplate;
 			}
 
-			if (item is TestModel2)
-			{
-				return TestModel2Template;
-			}
 			return null;
 		}
 	}

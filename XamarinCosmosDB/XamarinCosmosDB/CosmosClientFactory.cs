@@ -1,6 +1,7 @@
 ﻿using Microsoft.Azure.Cosmos;
 using System;
 using System.Diagnostics;
+using System.Net.Http;
 using Xamarin.Forms;
 
 namespace XamarinCosmosDB
@@ -29,7 +30,7 @@ namespace XamarinCosmosDB
 				
 				_cosmosAccessToken = token;
 
-				if (string.IsNullOrEmpty(_cosmosAccessToken))
+				if (!App.UseLocalCosmosDB && string.IsNullOrEmpty(_cosmosAccessToken))
 				{
 					Debug.WriteLine("Could not create Cosmos Client - there is no Cosmos Resource Token!");
 					return null;
@@ -41,20 +42,36 @@ namespace XamarinCosmosDB
 #if DEBUG
 				if (App.UseLocalCosmosDB)
 				{
-					//using static connection (not the resource token)
-					//connectionString = @"AccountEndpoint=https://[dbName].documents.azure.com:443/;AccountKey=[AccountKey]";
-					//connectionString = App.Settings[AppSettings.COSMOS_DB_CONNECTION_STRING_LOCAL];
-					//_client = new CosmosClient(connectionString, options); 
+					CosmosClientOptions cosmosClientOptions = new CosmosClientOptions { ApplicationName = "CosmosXamarinTest" };
 
 					//using resource token:
-					connectionString = App.Settings[AppSettings.COSMOS_DB_URL_LOCAL];
+					var connectionStringBase = App.Settings[AppSettings.COSMOS_DB_LOCAL];
 					if (Device.RuntimePlatform == Device.UWP)
 					{
-						connectionString = "http://localhost:8081/";
+						connectionStringBase = "https://localhost:8081/";
 					}
+					else
+					{
+						//bypass SSL for iOS / Android emulators
+						cosmosClientOptions.HttpClientFactory = () =>
+							{
+								HttpMessageHandler httpMessageHandler = new HttpClientHandler()
+								{
+									ServerCertificateCustomValidationCallback = (req, cert, chain, errors) => true
+								};
+								return new HttpClient(httpMessageHandler);
+							};
+						cosmosClientOptions.ConnectionMode = ConnectionMode.Gateway;							
+					}
+
+					var localKey = string.Format(App.Settings[AppSettings.COSMOS_DB_LOCAL_KEY], connectionStringBase);
+					_client = new CosmosClient(connectionStringBase,  _cosmosAccessToken, cosmosClientOptions); 
 				}
 #endif
-				_client = new CosmosClient(connectionString, _cosmosAccessToken, options); //403 Forbidden error if include "AllowBulkExecution" = true
+				if (!App.UseLocalCosmosDB)
+				{
+					_client = new CosmosClient(connectionString, _cosmosAccessToken, options); //403 Forbidden error if include "AllowBulkExecution" = true
+				}
 
 				string databaseName = App.Settings[AppSettings.COSMOS_DB_NAME];
 				string collectionName = App.Settings[AppSettings.COSMOS_COLLECTION_NAME];

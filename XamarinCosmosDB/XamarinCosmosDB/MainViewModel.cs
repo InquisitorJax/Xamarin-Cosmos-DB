@@ -1,4 +1,5 @@
-﻿using Prism.Commands;
+﻿using Microsoft.Azure.Cosmos;
+using Prism.Commands;
 using Prism.Mvvm;
 using System;
 using System.Diagnostics;
@@ -137,16 +138,31 @@ namespace XamarinCosmosDB
 			return response;
 		}
 
+		private async Task QuickStartLocalDB()
+		{
+			var cosmosClient = new CosmosClient("https://localhost:8081", "C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw==",
+				new CosmosClientOptions() { ApplicationName = "CosmosDBDotnetQuickstart" });
+			var container = cosmosClient.GetDatabase("remotimedb").GetContainer("UserData");
+			var testRecord = new TestModel { Name = ModelName };
+			var item = new CosmosDocument<TestModel>(testRecord);
+			ItemResponse<CosmosDocument<TestModel>> response = await container.CreateItemAsync<CosmosDocument<TestModel>>(item, new PartitionKey(item.UserId));
+		}
+
 		private async void CreateDBRecord()
-		{			
+		{
 			if (string.IsNullOrEmpty(ModelName))
 			{
 				Message = "Enter a name for the model!";
 				return;
 			}
 
+			//if (App.UseLocalCosmosDB)
+			//{
+			//	await QuickStartLocalDB();
+			//}
+
 			var testRecord = new TestModel { Name = ModelName };			
-			await SaveRecordAsync(testRecord);
+			await SaveRecordAsync(testRecord).ConfigureAwait(false);
 		}
 
 		private int _record2NumberCounter;
@@ -163,7 +179,7 @@ namespace XamarinCosmosDB
 			var testRecord = new TestModel2 { Name = ModelName, Number = _record2NumberCounter, Date = newDate };
 			_record2NumberCounter++;
 
-			await SaveRecordAsync(testRecord);
+			await SaveRecordAsync(testRecord).ConfigureAwait(false);
 		}
 
 		private async Task SaveRecordAsync<T>(T model) where T : ModelBase, new()
@@ -175,7 +191,7 @@ namespace XamarinCosmosDB
 				//make sure we have a valid token to call cosmos with
 				await CheckForValidResourceTokenAsync();
 
-				var saveResult = await Repo.SaveModelAsync(model);
+				var saveResult = await Repo.SaveModelAsync(model).ConfigureAwait(false);
 
 				if (saveResult.IsValid())
 				{

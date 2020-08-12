@@ -11,32 +11,38 @@
 				<converters:NullValueToBooleanConverter x:Key="nvc" />
 			</StackLayout.Resources>
 
+
+			<!--  IsVisible="{Binding IsToggled, Converter={StaticResource bib}, Source={x:Reference _localDbSwitch}}"  -->
 			<StackLayout Orientation="Horizontal">
 				<Switch IsToggled="{Binding UseLocalResourceTokenBroker}" />
 				<Label Text="Use Local Cosmos DB Resource Token Broker Function" VerticalTextAlignment="Center" />
 			</StackLayout>
 
+			<!--  IsVisible="{Binding IsToggled, Source={x:Reference _localDbSwitch}, Converter={StaticResource bib}}"  -->
+			<StackLayout>
+				<Button Command="{Binding FetchResourceTokenCommand}"
+				        IsEnabled="{Binding IsBusy, Converter={StaticResource bib}}"
+				        Text="Fetch Resource Token" />
 
-			<Button Command="{Binding FetchResourceTokenCommand}"
-			        IsEnabled="{Binding IsBusy, Converter={StaticResource bib}}"
-			        Text="Fetch Resource Token" />
+				<Label FontAttributes="Bold"
+				       FontSize="Medium"
+				       Text="Token:" />
+				<Label HorizontalOptions="Center"
+				       LineBreakMode="TailTruncation"
+				       Text="{Binding Token}" />
 
-			<Label FontAttributes="Bold"
-			       FontSize="Medium"
-			       Text="Token:" />
-			<Label HorizontalOptions="Center"
-			       LineBreakMode="TailTruncation"
-			       Text="{Binding Token}" />
-
-			<Label FontAttributes="Bold"
-			       FontSize="Medium"
-			       Text="{Binding TokenExpiryMinutes, StringFormat='The token expires in {0} minutes'}" />
+				<Label FontAttributes="Bold"
+				       FontSize="Medium"
+				       Text="{Binding TokenExpiryMinutes, StringFormat='The token expires in {0} minutes'}" />
+			</StackLayout>
 
 			<StackLayout IsVisible="{Binding Token, Converter={StaticResource nvc}, ConverterParameter=switch}">
+
 				<StackLayout Orientation="Horizontal">
-					<Switch IsToggled="{Binding UseLocalCosmosDB}" />
+					<Switch x:Name="_localDbSwitch" IsToggled="{Binding UseLocalCosmosDB}" />
 					<Label Text="Use Local Cosmos DB Emulator" VerticalTextAlignment="Center" />
 				</StackLayout>
+
 				<Label FontAttributes="Bold"
 				       FontSize="Medium"
 				       Text="Name for DB Item" />

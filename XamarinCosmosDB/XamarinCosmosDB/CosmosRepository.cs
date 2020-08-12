@@ -90,7 +90,7 @@ namespace XamarinCosmosDB
 			{
 				var docToSave = new CosmosDocument<T>(model);
 
-				await _container.UpsertItemAsync(docToSave, _partitionKey);
+				await _container.CreateItemAsync(docToSave, _partitionKey).ConfigureAwait(false);
 			}
 			catch (CosmosException cex)
 			{
@@ -151,7 +151,7 @@ namespace XamarinCosmosDB
 		{
 			var result = Notification.Success();
 
-			if (string.IsNullOrEmpty(_token))
+			if (!App.UseLocalCosmosDB && string.IsNullOrEmpty(_token))
 			{
 				result.Fail("We need a resource token please :(");
 			}

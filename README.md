@@ -1,5 +1,6 @@
 # Xamarin-Cosmos-DB
-sample project demonstrating using CosmosDB from Xamarin Apps
+Sample project demonstrating using CosmosDB from Xamarin Apps
+Uses the latest v3 SDK for CosmosDB
 
 ### Known Issues
 - When adding "AllowBulkExecution" = true, CosmosDB returns 403 Forbidden response on any calls.
@@ -25,3 +26,12 @@ Your commandline to start Cosmos should look something like:
 - For Windows UWP, localhost has been set in code
 - Set MainViewModel.UseLocalResourceTokenBroker to fetch the token from local function, or azure function
 - Set MainViewModel.UseLocalCosmosDB to operate against the local CosmosDB Emulator, or azure CosmosDB
+
+### Authentication
+Authentication is not covered in this example. We're just sending a hard-coded userID via a query parameter to the function.
+There is, however, some sample code on how to determine the user id from a JWT access token in the azure function.
+More detail on auth with AAD B2C here: https://docs.microsoft.com/en-us/xamarin/xamarin-forms/data-cloud/authentication/azure-ad-b2c
+
+This code wouldn't have been possible without the very helpful repo found here:
+https://github.com/1iveowl/CosmosResourceTokenBroker
+

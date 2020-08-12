@@ -1,5 +1,10 @@
 # Xamarin-Cosmos-DB
-sample project demonstrating using CosmosDB from Xamarin Apps (in progress)
+sample project demonstrating using CosmosDB from Xamarin Apps
+
+### Known Issues
+- pointing to local CosmosDB Emulator: calls hang in what seems like a deadlock https://github.com/InquisitorJax/Xamarin-Cosmos-DB/issues/1
+- When adding "AllowBulkExecution" = true, CosmosDB returns 403 Forbidden response on any calls.
+- UWP fetch records throws internal 500 error when there are no records for a type
 
 ### Switching Environments
 
@@ -15,8 +20,3 @@ sample project demonstrating using CosmosDB from Xamarin Apps (in progress)
 - For Windows UWP, localhost has been set in code
 - Set MainViewModel.UseLocalResourceTokenBroker to fetch the token from local function, or azure function
 - Set MainViewModel.UseLocalCosmosDB to operate against the local CosmosDB Emulator, or azure CosmosDB
-
-### Current Results
-- Resource token works
-- Local CosmosDB create attempt hangs on the api call
-- Azure CosmosDB create attempt returns a 403 Forbidden result (Firewall "allow public access" has been enabled)

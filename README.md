@@ -2,9 +2,14 @@
 sample project demonstrating using CosmosDB from Xamarin Apps
 
 ### Known Issues
-- pointing to local CosmosDB Emulator: calls hang in what seems like a deadlock https://github.com/InquisitorJax/Xamarin-Cosmos-DB/issues/1
 - When adding "AllowBulkExecution" = true, CosmosDB returns 403 Forbidden response on any calls.
 - UWP fetch records throws internal 500 error when there are no records for a type
+
+### Local CosmosDB Emulator Testing
+-  Make sure that you setup allow network access: https://docs.microsoft.com/en-us/azure/cosmos-db/local-emulator#running-on-a-local-network
+Your commandline to start Cosmos should look something like: 
+"C:\Program Files\Azure Cosmos DB Emulator\Microsoft.Azure.Cosmos.Emulator.exe" /NoFirewall /AllowNetworkAccess /Key=C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw==
+- Also key is the bypassing of SSL code you can find in the CosmosClientFactory class
 
 ### Switching Environments
 

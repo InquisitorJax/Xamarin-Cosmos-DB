@@ -1,6 +1,8 @@
 # Xamarin-Cosmos-DB
 Sample project demonstrating using CosmosDB from Xamarin Apps
 Uses the latest v3 SDK for CosmosDB
+Example uses single collection container to store different domain types
+Records are partitioned by UserId
 
 ### Known Issues
 - When adding "AllowBulkExecution" = true, CosmosDB returns 403 Forbidden response on any calls.

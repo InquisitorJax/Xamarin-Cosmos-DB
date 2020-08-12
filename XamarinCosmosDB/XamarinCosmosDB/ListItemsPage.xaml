@@ -7,6 +7,7 @@
              x:Name="_page">
 	<ContentPage.Resources>
 		<converters:BooleanToInvertedBooleanConverter x:Key="bib" />
+		<xamarincosmosdb:LocalDateTimeConverter x:Key="dtc" />
 		<DataTemplate x:Key="TestModelTemplateNoSwipe">
 			<Grid Margin="12">
 				<StackLayout>
@@ -83,7 +84,7 @@
 							<Label Text="{Binding Name}" />
 							<Label Text="{Binding Number}" />
 						</StackLayout>
-						<Label Text="{Binding Date}" />
+						<Label Text="{Binding Date, Converter={StaticResource dtc}}" />
 					</StackLayout>
 				</Grid>
 			</SwipeView>
@@ -98,10 +99,18 @@
 	</ContentPage.Resources>
 	<ContentPage.Content>
 		<Grid Margin="12" RowDefinitions="Auto, *">
-			<Label HorizontalOptions="Center"
-			       IsVisible="{OnPlatform UWP=False,
-			                              Default=True}"
-			       Text="Swipe to delete / edit an item" />
+			<StackLayout>
+
+				<StackLayout Orientation="Horizontal">
+					<Switch x:Name="_dateToggle" IsToggled="{Binding FilterByDate}" />
+					<Label Text="Filter by Date" />
+				</StackLayout>
+				<DatePicker Date="{Binding FilterDate}" IsVisible="{Binding IsToggled, Source={x:Reference _dateToggle}}" />
+				<Label HorizontalOptions="Center"
+				       IsVisible="{OnPlatform UWP=False,
+				                              Default=True}"
+				       Text="Swipe to delete / edit an item" />
+			</StackLayout>
 			<RefreshView Grid.Row="1"
 			             Command="{Binding RefreshRecordsCommand}"
 			             IsRefreshing="{Binding IsBusy}">

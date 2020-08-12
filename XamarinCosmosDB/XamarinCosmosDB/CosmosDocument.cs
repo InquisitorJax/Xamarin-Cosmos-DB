@@ -49,10 +49,19 @@ namespace XamarinCosmosDB
 		public string Name { get; set; }
 	}
 
-	public class TestModel2  : TestModel
+	public class TestModel2 : TestModel
 	{
+		private DateTime _date;
+
 		public int Number { get; set; }
 
-		public DateTime Date { get; set; }
+		// always store dates as UTC
+		// doc: https://docs.microsoft.com/en-us/azure/cosmos-db/working-with-dates
+
+		public DateTime Date //{ get; set; }
+		{ 
+			get => _date; 
+			set => _date = value.ToUniversalTime(); 
+		}
 	}
 }

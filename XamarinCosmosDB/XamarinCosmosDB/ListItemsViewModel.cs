@@ -1,4 +1,5 @@
 ﻿using Prism.Commands;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
@@ -14,6 +15,8 @@ namespace XamarinCosmosDB
 		{
 			Models = new ObservableCollection<object>();
 
+			FilterDate = DateTime.Now;
+
 			RefreshRecordsCommand = new DelegateCommand(async () => await FetchRecordsAsync());
 			DeleteModelCommand = new DelegateCommand<ModelBase>(DeleteModel);
 			EditModelCommand = new DelegateCommand<TestModel2>(EditModel);
@@ -23,7 +26,6 @@ namespace XamarinCosmosDB
 		public ICommand CreateDBRecordCommand { get; }
 
 		public ICommand EditModelCommand { get; }
-
 
 		public ICommand DeleteModelCommand { get; }
 
@@ -37,6 +39,22 @@ namespace XamarinCosmosDB
 			set { SetProperty(ref _models, value); }
 		}
 
+		private DateTime _filterDate;
+
+		public DateTime FilterDate
+		{
+			get { return _filterDate; }
+			set { SetProperty(ref _filterDate, value); }
+		}
+
+		private bool _filterByDate;
+
+		public bool FilterByDate
+		{
+			get { return _filterByDate; }
+			set { SetProperty(ref _filterByDate, value); }
+		}
+
 		public async Task FetchRecordsAsync()
 		{
 			IsBusy = true;
@@ -45,16 +63,27 @@ namespace XamarinCosmosDB
 			{
 				var models = new List<object>();
 
-				var modelCollectionResult = await Repo.FetchModelCollectionAsync<TestModel>();
-				if (modelCollectionResult.IsValid())
+				if (FilterByDate)
 				{
-					models.AddRange(modelCollectionResult.ModelCollection);
+					var modelCollection2Result = await Repo.FetchTestModel2ByDateAsync(FilterDate);
+					if (modelCollection2Result.IsValid())
+					{
+						models.AddRange(modelCollection2Result.ModelCollection);
+					}
 				}
-
-				var modelCollection2Result = await Repo.FetchModelCollectionAsync<TestModel2>();
-				if (modelCollection2Result.IsValid())
+				else
 				{
-					models.AddRange(modelCollection2Result.ModelCollection);
+					var modelCollectionResult = await Repo.FetchModelCollectionAsync<TestModel>();
+					if (modelCollectionResult.IsValid())
+					{
+						models.AddRange(modelCollectionResult.ModelCollection);
+					}
+
+					var modelCollection2Result = await Repo.FetchModelCollectionAsync<TestModel2>();
+					if (modelCollection2Result.IsValid())
+					{
+						models.AddRange(modelCollection2Result.ModelCollection);
+					}
 				}
 
 				Models = new ObservableCollection<object>(models);

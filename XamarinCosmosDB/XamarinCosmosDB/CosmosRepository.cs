@@ -1,5 +1,6 @@
 ﻿using Microsoft.Azure.Cosmos;
 using Microsoft.Azure.Cosmos.Linq;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -17,6 +18,8 @@ namespace XamarinCosmosDB
 		Task<Notification> SaveModelAsync<T>(T model) where T : ModelBase, new();
 
 		Task<FetchModelCollectionResult<T>> FetchModelCollectionAsync<T>() where T : ModelBase, new();
+
+		Task<FetchModelCollectionResult<TestModel2>> FetchTestModel2ByDateAsync(DateTime filterDate);
 
 		Task<Notification> DeleteModelAsync<T>(string id) where T : ModelBase, new();
 	}
@@ -71,6 +74,47 @@ namespace XamarinCosmosDB
 			catch
 			{
 				Debug.WriteLine($"Error while trying to fetch all {typeof(T).Name} items from cosmos");
+				result.Fail("Error");
+			}
+
+			return result;
+		}
+
+		public async Task<FetchModelCollectionResult<TestModel2>> FetchTestModel2ByDateAsync(DateTime filterDate)
+		{
+			var result = new FetchModelCollectionResult<TestModel2>();
+			var allItems = new List<TestModel2>();
+
+			//all stored dates are in utc - make sure apples == apples
+			filterDate = filterDate.ToUniversalTime();
+
+			try
+			{
+				result.Notification = CheckServiceCanOperate();
+
+				if (!result.IsValid())
+				{
+					return result;
+				}
+
+				var queryable = _container.GetItemLinqQueryable<CosmosDocument<TestModel2>>(allowSynchronousQueryExecution: true, requestOptions: PartitionRequestOptions);
+				var query = queryable.Where(cd => cd.Model.Date >= filterDate.Date && cd.Model.Date <= filterDate.AddDays(1).Date);
+				var iterator = query.ToFeedIterator();
+
+				using (iterator)
+				{
+					while (iterator.HasMoreResults)
+					{
+						FeedResponse<CosmosDocument<TestModel2>> response = await iterator.ReadNextAsync();
+						allItems.AddRange(response.Select(d => d.Model));
+					}
+				}
+
+				result.ModelCollection = allItems;
+			}
+			catch
+			{
+				Debug.WriteLine($"Error while trying to fetch all {typeof(TestModel2).Name} items from cosmos");
 				result.Fail("Error");
 			}
 
@@ -182,8 +226,6 @@ namespace XamarinCosmosDB
 			}
 		
 		}
-
-
 
 	}
 }

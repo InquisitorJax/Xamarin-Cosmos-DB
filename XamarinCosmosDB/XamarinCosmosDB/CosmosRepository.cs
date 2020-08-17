@@ -30,11 +30,6 @@ namespace XamarinCosmosDB
 		private PartitionKey _partitionKey;
 		private string _token;
 
-		public CosmosRepository()
-		{
-			
-		}
-
 		public void UpdateToken(string token)
 		{
 			_token = token;

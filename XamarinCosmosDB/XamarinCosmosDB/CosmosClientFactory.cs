@@ -42,7 +42,7 @@ namespace XamarinCosmosDB
 #if DEBUG
 				if (App.UseLocalCosmosDB)
 				{
-					CosmosClientOptions cosmosClientOptions = new CosmosClientOptions { ApplicationName = "CosmosXamarinTest" };
+					CosmosClientOptions cosmosClientOptions = new CosmosClientOptions { ApplicationName = "CosmosXamarinTest", AllowBulkExecution = allowBulkExecution };
 
 					//using resource token:
 					var connectionStringBase = App.Settings[AppSettings.COSMOS_DB_LOCAL];

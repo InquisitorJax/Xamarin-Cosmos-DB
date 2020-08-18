@@ -129,7 +129,7 @@ namespace XamarinCosmosDB
 			{
 				var docToSave = new CosmosDocument<T>(model);
 
-				await _container.CreateItemAsync(docToSave, _partitionKey).ConfigureAwait(false);
+				await _container.UpsertItemAsync(docToSave, _partitionKey).ConfigureAwait(false);
 			}
 			catch (CosmosException cex)
 			{

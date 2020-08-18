@@ -6,6 +6,7 @@ Uses the latest v3 SDK for CosmosDB
 
 ### Known Issues
 - When adding "AllowBulkExecution" = true, CosmosDB returns 403 Forbidden response on any calls.
+  https://github.com/Azure/azure-cosmos-dotnet-v3/issues/1783
 - UWP fetch records throws internal 500 error when there are no records for a type
 
 ### Local CosmosDB Emulator Testing

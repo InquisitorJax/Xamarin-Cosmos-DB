@@ -42,18 +42,16 @@ namespace XamarinCosmosDB
 #if DEBUG
 				if (App.UseLocalCosmosDB)
 				{
-					CosmosClientOptions cosmosClientOptions = new CosmosClientOptions { ApplicationName = "CosmosXamarinTest", AllowBulkExecution = allowBulkExecution };
-
 					//using resource token:
-					var connectionStringBase = App.Settings[AppSettings.COSMOS_DB_LOCAL];
+					connectionString = App.Settings[AppSettings.COSMOS_DB_LOCAL];
 					if (Device.RuntimePlatform == Device.UWP)
 					{
-						connectionStringBase = "https://localhost:8081/";
+						connectionString = "https://localhost:8081/";
 					}
 					else
 					{
 						//bypass SSL for iOS / Android emulators
-						cosmosClientOptions.HttpClientFactory = () =>
+						options.HttpClientFactory = () =>
 							{
 								HttpMessageHandler httpMessageHandler = new HttpClientHandler()
 								{
@@ -61,17 +59,13 @@ namespace XamarinCosmosDB
 								};
 								return new HttpClient(httpMessageHandler);
 							};
-						cosmosClientOptions.ConnectionMode = ConnectionMode.Gateway;							
+						options.ConnectionMode = ConnectionMode.Gateway;							
 					}
 
-					var localKey = string.Format(App.Settings[AppSettings.COSMOS_DB_LOCAL_KEY], connectionStringBase);
-					_client = new CosmosClient(connectionStringBase,  _cosmosAccessToken, cosmosClientOptions); 
+					//var localKey = string.Format(App.Settings[AppSettings.COSMOS_DB_LOCAL_KEY], connectionString);
 				}
 #endif
-				if (!App.UseLocalCosmosDB)
-				{
-					_client = new CosmosClient(connectionString, _cosmosAccessToken, options); //403 Forbidden error if include "AllowBulkExecution" = true
-				}
+				_client = new CosmosClient(connectionString, _cosmosAccessToken, options); //403 Forbidden error if include "AllowBulkExecution" = true
 
 				string databaseName = App.Settings[AppSettings.COSMOS_DB_NAME];
 				string collectionName = App.Settings[AppSettings.COSMOS_COLLECTION_NAME];

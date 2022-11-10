@@ -14,6 +14,7 @@ Uses the latest v3 SDK for CosmosDB
 Your commandline to start Cosmos should look something like: 
 "C:\Program Files\Azure Cosmos DB Emulator\Microsoft.Azure.Cosmos.Emulator.exe" /NoFirewall /AllowNetworkAccess /Key=C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw==
 - Also key is the bypassing of SSL code you can find in the CosmosClientFactory class
+- You may also first have to delete the data directory %LOCALAPPDATA%\CosmosDBEmulator. [link](https://learn.microsoft.com/en-us/azure/cosmos-db/local-emulator?tabs=ssl-netstd21#enable-access-to-emulator-on-a-local-network)
 
 ### Switching Environments
 

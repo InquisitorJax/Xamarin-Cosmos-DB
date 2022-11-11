@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <SelectedDevice>Simulator</SelectedDevice>
+    <DefaultDevice>iPad %288th generation%29 iOS 14.1</DefaultDevice>
+    <SelectedPlatformGroup>Simulator</SelectedPlatformGroup>
+    <ActiveDebugProfile>Simulator</ActiveDebugProfile>
+  </PropertyGroup>
+</Project>

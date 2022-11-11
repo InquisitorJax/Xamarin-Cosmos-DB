@@ -26,7 +26,7 @@ namespace XamarinCosmosDB
 
 			App.CurrentUserId = "test-user-id";
 			UseLocalResourceTokenBroker = true;
-			UseLocalCosmosDB = false;
+			UseLocalCosmosDB = true;
 		}
 
 		public ICommand FetchResourceTokenCommand { get; }

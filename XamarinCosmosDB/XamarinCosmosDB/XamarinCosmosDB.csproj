@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Include="..\..\CosmosResourceTokenProvider\CustomPermissionResponse.cs" Link="CustomPermissionResponse.cs" />
+    <Compile Include="..\..\CosmosResourceTokenProvider\PermissionToken\CustomPermissionResponse.cs" Link="CustomPermissionResponse.cs" />
   </ItemGroup>
 
   <ItemGroup>

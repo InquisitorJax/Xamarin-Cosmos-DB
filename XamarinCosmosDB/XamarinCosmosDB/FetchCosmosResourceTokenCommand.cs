@@ -1,4 +1,4 @@
-﻿using CosmosResourceTokenProvider;
+﻿using CosmosResourceTokenProvider.PermissionToken;
 using Newtonsoft.Json;
 using System;
 using System.Net;

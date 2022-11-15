@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace CosmosResourceTokenProvider
+namespace CosmosResourceTokenProvider.PermissionToken
 {
-	public class ResourceTokenBrokerException : Exception
+    public class ResourceTokenBrokerException : Exception
     {
         public ResourceTokenBrokerException() { }
 

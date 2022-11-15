@@ -19,6 +19,12 @@ namespace CosmosResourceTokenProvider
 	//        https://docs.microsoft.com/en-us/sandbox/functions-recipes/cosmos-db?tabs=csharp
 	//	      https://codemilltech.com/adding-azure-ad-b2c-authentication-to-azure-functions/
 
+	// in-process vs isolated worker process functions (https://learn.microsoft.com/en-us/azure/azure-functions/dotnet-isolated-in-process-differences)
+	// - currently this is an in-process function
+
+	// upgrading function apps in azure (using slots)
+	// https://learn.microsoft.com/en-us/azure/azure-functions/migrate-version-3-version-4?tabs=net6-in-proc%2Cazure-cli%2Cwindows&pivots=programming-language-csharp#upgrade-using-slots
+
 	/// <summary>
 	/// Get a resource token based on userID (UserID is the partition key for storing records)
 	/// </summary>

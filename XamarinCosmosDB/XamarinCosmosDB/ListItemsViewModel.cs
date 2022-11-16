@@ -5,14 +5,18 @@ using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Wibci.LogicCommand;
+using Xamarin.Forms;
 
 namespace XamarinCosmosDB
 {
 	public class ListItemsViewModel : ViewModelBase
 	{
 
+		private readonly IDeleteAllCosmosDataCommand _deleteAllDataLogic;
 		public ListItemsViewModel()
 		{
+			_deleteAllDataLogic = DependencyService.Get<IDeleteAllCosmosDataCommand>();
+
 			Models = new ObservableCollection<object>();
 
 			FilterDate = DateTime.Now;
@@ -21,6 +25,7 @@ namespace XamarinCosmosDB
 			DeleteModelCommand = new DelegateCommand<ModelBase>(DeleteModel);
 			EditModelCommand = new DelegateCommand<TestModel2>(EditModel);
 			CreateDBRecordCommand = new DelegateCommand(CreateDBRecord);
+			DeleteAllDataCommand = new DelegateCommand(async () => await DeleteAllDataAsync());
 		}
 
 		public ICommand CreateDBRecordCommand { get; }
@@ -30,6 +35,8 @@ namespace XamarinCosmosDB
 		public ICommand DeleteModelCommand { get; }
 
 		public ICommand RefreshRecordsCommand { get; }
+
+		public ICommand DeleteAllDataCommand { get; }
 
 		private ObservableCollection<object> _models;
 
@@ -135,6 +142,25 @@ namespace XamarinCosmosDB
 				if (deleteResult.IsValid())
 				{
 					//normally we'd just remove the record for the Models collection, but want to make sure DB operation was successful 
+					await FetchRecordsAsync();
+				}
+			}
+			finally
+			{
+				IsBusy = false;
+			}
+		}
+
+		private async Task DeleteAllDataAsync()
+		{
+			IsBusy = true;
+
+			try
+			{
+				var request = new CosmosResourceRequest(App.CurrentUserId);
+				var deleteResult = await _deleteAllDataLogic.ExecuteAsync(request);
+				if (deleteResult.IsValid())
+				{
 					await FetchRecordsAsync();
 				}
 			}

@@ -9,11 +9,11 @@ using Xamarin.Forms;
 
 namespace XamarinCosmosDB
 {
-	public interface IFetchCosmosResourceTokenCommand : IAsyncLogicCommand<CosmosResourceTokenRequest, CosmosResourceTokenResult>
+	public interface IFetchCosmosResourceTokenCommand : IAsyncLogicCommand<CosmosResourceRequest, CosmosResourceTokenResult>
 	{
 	}
 
-	public class FetchCosmosResourceTokenCommand : AsyncLogicCommand<CosmosResourceTokenRequest, CosmosResourceTokenResult>, IFetchCosmosResourceTokenCommand
+	public class FetchCosmosResourceTokenCommand : AsyncLogicCommand<CosmosResourceRequest, CosmosResourceTokenResult>, IFetchCosmosResourceTokenCommand
 	{
 		private readonly HttpClient _httpClient;
 
@@ -27,7 +27,7 @@ namespace XamarinCosmosDB
 			_httpClient = new HttpClient(handler);
 		}
 
-		public override async Task<CosmosResourceTokenResult> ExecuteAsync(CosmosResourceTokenRequest request)
+		public override async Task<CosmosResourceTokenResult> ExecuteAsync(CosmosResourceRequest request)
 		{
 			var result = new CosmosResourceTokenResult();
 
@@ -55,7 +55,7 @@ namespace XamarinCosmosDB
 			userBrokerUrl += $"?userId={request.AuthAccessToken}";
 			Uri callUri = new Uri(baseUri, userBrokerUrl);
 
-			InitializeHttpClient(callUri);
+			_httpClient.Init(callUri);
 			var response = await _httpClient.GetAsync(callUri).ConfigureAwait(false);
 
 			if (response.IsSuccessStatusCode)
@@ -73,23 +73,10 @@ namespace XamarinCosmosDB
 				result.Notification.Fail("Could not get access token from CosmosDB Server Function! " + response.ReasonPhrase);
 			}
 
+
 			return result;
 		}
-
-		private void InitializeHttpClient(Uri baseUri)
-		{
-			_httpClient.DefaultRequestHeaders.Clear();
-
-			//_httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {accessToken}"); Access token obtained from Auth Component - we're just using fake userId for this example
-			_httpClient.DefaultRequestHeaders.Add("User-Agent", $"ResourceTokenBroker/0.9.0");
-			_httpClient.DefaultRequestHeaders.Add("Accept", "*/*");
-			_httpClient.DefaultRequestHeaders.Add("Host", $"{baseUri.Host}");
-			_httpClient.DefaultRequestHeaders.Add("Accept-Encoding", $"gzip, deflate, br");
-			_httpClient.DefaultRequestHeaders.Add("Cache-Control", $"no-cache");
-			_httpClient.DefaultRequestHeaders.Add("Connection", $"keep-alive");
-		}
 	}
-
 
 	public class CosmosResourceTokenResult : CommandResult
 	{
@@ -102,9 +89,9 @@ namespace XamarinCosmosDB
 		}
 	}
 
-	public class CosmosResourceTokenRequest
+	public class CosmosResourceRequest
 	{
-		public CosmosResourceTokenRequest(string authAccessToken)
+		public CosmosResourceRequest(string authAccessToken)
 		{
 			AuthAccessToken = authAccessToken;
 		}

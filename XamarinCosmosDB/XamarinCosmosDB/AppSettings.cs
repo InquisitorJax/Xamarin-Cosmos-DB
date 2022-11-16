@@ -8,6 +8,8 @@ namespace XamarinCosmosDB
 		public const string COSMOS_BROKER_BASE_URL_LOCAL = "CosmosBrokerBaseUrl_Local";
 		public const string COSMOS_USER_BROKER_URL = "CosmosUserBrokerUrl";
 		public const string COSMOS_USER_BROKER_URL_LOCAL = "CosmosUserBrokerUrl_Local";
+		public const string COSMOS_DELETE_ACCOUNT_URL = "CosmosDeleteAccountDataUrl";
+		public const string COSMOS_DELETE_ACCOUNT_URL_LOCAL = "CosmosDeleteAccountDataUrl_Local";
 		public const string COSMOS_DB_URL = "CosmosDBUrl";
 		public const string COSMOS_DB_LOCAL = "CosmosDBUrl_Local";
 		public const string COSMOS_DB_LOCAL_KEY = "CosmosDBUrl_Local_Key";

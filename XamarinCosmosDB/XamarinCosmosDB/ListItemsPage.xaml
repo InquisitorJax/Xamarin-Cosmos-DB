@@ -4,7 +4,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:converters="clr-namespace:Wibci.Xamarin.Forms.Converters;assembly=Wibci.Xamarin.Forms.Converters"
              xmlns:xamarincosmosdb="clr-namespace:XamarinCosmosDB"
-             x:Name="_page">
+             x:Name="_page"
+             x:DataType="xamarincosmosdb:ListItemsViewModel">
 	<ContentPage.Resources>
 		<converters:BooleanToInvertedBooleanConverter x:Key="bib" />
 		<xamarincosmosdb:LocalDateTimeConverter x:Key="dtc" />
@@ -99,19 +100,29 @@
 	</ContentPage.Resources>
 	<ContentPage.Content>
 		<Grid Margin="12" RowDefinitions="Auto, *">
-			<StackLayout>
-
-				<StackLayout Orientation="Horizontal">
-					<Switch x:Name="_dateToggle" IsToggled="{Binding FilterByDate}" />
-					<Label Text="Filter by Date" />
+			<Frame BackgroundColor="LightGray" CornerRadius="8">
+				<StackLayout>
+					<StackLayout Orientation="Horizontal">
+						<Switch x:Name="_dateToggle" IsToggled="{Binding FilterByDate}" />
+						<Label Text="Filter by Date" />
+					</StackLayout>
+					<DatePicker Date="{Binding FilterDate}" IsVisible="{Binding IsToggled, Source={x:Reference _dateToggle}}" />
+					<Label FontSize="Large"
+					       HorizontalOptions="Center"
+					       IsVisible="{OnPlatform UWP=False,
+					                              Default=True}"
+					       Text="Swipe to delete / edit an item" />
+					<Button Margin="0,8,0,0"
+					        BackgroundColor="Red"
+					        Command="{Binding DeleteAllDataCommand}"
+					        CornerRadius="8"
+					        IsEnabled="{Binding IsBusy, Converter={StaticResource bib}}"
+					        Text="DELETE ALL ITEMS"
+					        TextColor="White" />
 				</StackLayout>
-				<DatePicker Date="{Binding FilterDate}" IsVisible="{Binding IsToggled, Source={x:Reference _dateToggle}}" />
-				<Label HorizontalOptions="Center"
-				       IsVisible="{OnPlatform UWP=False,
-				                              Default=True}"
-				       Text="Swipe to delete / edit an item" />
-			</StackLayout>
+			</Frame>
 			<RefreshView Grid.Row="1"
+			             Margin="0,16,0,0"
 			             Command="{Binding RefreshRecordsCommand}"
 			             IsRefreshing="{Binding IsBusy}">
 				<CollectionView ItemTemplate="{StaticResource TemplateSelector}" ItemsSource="{Binding Models}">

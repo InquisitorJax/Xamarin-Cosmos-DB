@@ -26,7 +26,7 @@ namespace XamarinCosmosDB
 
 			App.CurrentUserId = "test-user-id";
 			UseLocalResourceTokenBroker = true;
-			UseLocalCosmosDB = false;
+			UseLocalCosmosDB = true;
 		}
 
 		public ICommand FetchResourceTokenCommand { get; }
@@ -89,7 +89,6 @@ namespace XamarinCosmosDB
 			}
 		}
 
-
 		private string _message;
 
 		public string Message
@@ -116,7 +115,7 @@ namespace XamarinCosmosDB
 
 			try
 			{
-				var request = new CosmosResourceTokenRequest(App.CurrentUserId);
+				var request = new CosmosResourceRequest(App.CurrentUserId);
 				var logicResponse = await _fetchTokenLogic.ExecuteAsync(request);
 				response.AddRange(logicResponse.Notification);
 

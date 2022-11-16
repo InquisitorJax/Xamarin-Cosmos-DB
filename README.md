@@ -1,8 +1,9 @@
 # Xamarin-Cosmos-DB
 Sample project demonstrating using CosmosDB from Xamarin Apps
-Uses the latest v3 SDK for CosmosDB
+Uses the latest v4 SDK for CosmosDB + .NET 6
 - Example uses single collection container to store different domain types
 - Records are partitioned by UserId
+- Delete all records by partition key is still in preview. See more [here](https://learn.microsoft.com/en-us/azure/cosmos-db/nosql/how-to-delete-by-partition-key?tabs=dotnet-example)
 
 ### Known Issues
 - When adding "AllowBulkExecution" = true, CosmosDB returns 403 Forbidden response on any calls.
